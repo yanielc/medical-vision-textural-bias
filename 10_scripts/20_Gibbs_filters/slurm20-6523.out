@@ -1,0 +1,827 @@
+Sun Apr  4 09:40:08 2021       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 460.39       Driver Version: 460.39       CUDA Version: 11.2     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla T4            On   | 00000000:00:08.0 Off |                    0 |
+| N/A   40C    P8     9W /  70W |      0MiB / 15109MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   1  Tesla T4            On   | 00000000:00:09.0 Off |                    0 |
+| N/A   40C    P8     9W /  70W |      0MiB / 15109MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+MONAI version: 0.5.dev2113
+Numpy version: 1.19.2
+Pytorch version: 1.8.0
+MONAI flags: HAS_EXT = False, USE_COMPILED = False
+MONAI rev id: b3cc668c924b2a7e6b822416f4d920a098c27704
+
+Optional dependencies:
+Pytorch Ignite version: 0.4.4
+Nibabel version: 3.2.1
+scikit-image version: 0.17.2
+Pillow version: 8.1.2
+Tensorboard version: 1.15.0
+gdown version: 3.12.2
+TorchVision version: 0.9.0
+ITK version: NOT INSTALLED or UNKNOWN VERSION.
+tqdm version: 4.50.2
+lmdb version: NOT INSTALLED or UNKNOWN VERSION.
+psutil version: NOT INSTALLED or UNKNOWN VERSION.
+
+For details about installing the optional dependencies, please visit:
+    https://docs.monai.io/en/latest/installation.html#installing-the-recommended-dependencies
+
+Loading dataset:   0%|          | 0/100 [00:00<?, ?it/s]Loading dataset:   1%|          | 1/100 [00:04<07:06,  4.31s/it]Loading dataset:   5%|▌         | 5/100 [00:08<05:15,  3.32s/it]Loading dataset:   9%|▉         | 9/100 [00:11<03:50,  2.53s/it]Loading dataset:  10%|█         | 10/100 [00:11<02:51,  1.91s/it]Loading dataset:  11%|█         | 11/100 [00:11<02:08,  1.44s/it]Loading dataset:  13%|█▎        | 13/100 [00:15<02:11,  1.51s/it]Loading dataset:  14%|█▍        | 14/100 [00:15<01:39,  1.16s/it]Loading dataset:  16%|█▌        | 16/100 [00:15<01:10,  1.19it/s]Loading dataset:  17%|█▋        | 17/100 [00:18<02:08,  1.54s/it]Loading dataset:  18%|█▊        | 18/100 [00:20<02:01,  1.48s/it]Loading dataset:  21%|██        | 21/100 [00:22<01:37,  1.23s/it]Loading dataset:  22%|██▏       | 22/100 [00:23<01:29,  1.15s/it]Loading dataset:  23%|██▎       | 23/100 [00:23<01:06,  1.16it/s]Loading dataset:  24%|██▍       | 24/100 [00:23<00:53,  1.41it/s]Loading dataset:  25%|██▌       | 25/100 [00:25<01:11,  1.05it/s]Loading dataset:  26%|██▌       | 26/100 [00:26<01:17,  1.05s/it]Loading dataset:  27%|██▋       | 27/100 [00:26<00:57,  1.27it/s]Loading dataset:  28%|██▊       | 28/100 [00:27<00:47,  1.53it/s]Loading dataset:  29%|██▉       | 29/100 [00:28<00:54,  1.30it/s]Loading dataset:  30%|███       | 30/100 [00:30<01:23,  1.19s/it]Loading dataset:  33%|███▎      | 33/100 [00:31<01:00,  1.10it/s]Loading dataset:  34%|███▍      | 34/100 [00:33<01:31,  1.38s/it]Loading dataset:  36%|███▌      | 36/100 [00:33<01:05,  1.03s/it]Loading dataset:  37%|███▋      | 37/100 [00:34<00:51,  1.21it/s]Loading dataset:  38%|███▊      | 38/100 [00:36<01:26,  1.39s/it]Loading dataset:  39%|███▉      | 39/100 [00:37<01:04,  1.05s/it]Loading dataset:  41%|████      | 41/100 [00:37<00:49,  1.20it/s]Loading dataset:  42%|████▏     | 42/100 [00:40<01:16,  1.32s/it]Loading dataset:  43%|████▎     | 43/100 [00:40<01:03,  1.11s/it]Loading dataset:  45%|████▌     | 45/100 [00:41<00:45,  1.20it/s]Loading dataset:  46%|████▌     | 46/100 [00:43<01:12,  1.35s/it]Loading dataset:  47%|████▋     | 47/100 [00:44<00:53,  1.01s/it]Loading dataset:  49%|████▉     | 49/100 [00:44<00:39,  1.30it/s]Loading dataset:  50%|█████     | 50/100 [00:47<01:14,  1.49s/it]Loading dataset:  51%|█████     | 51/100 [00:48<01:03,  1.29s/it]Loading dataset:  54%|█████▍    | 54/100 [00:51<00:54,  1.18s/it]Loading dataset:  55%|█████▌    | 55/100 [00:51<00:47,  1.05s/it]Loading dataset:  58%|█████▊    | 58/100 [00:54<00:41,  1.01it/s]Loading dataset:  59%|█████▉    | 59/100 [00:55<00:34,  1.17it/s]Loading dataset:  60%|██████    | 60/100 [00:55<00:27,  1.48it/s]Loading dataset:  62%|██████▏   | 62/100 [00:57<00:32,  1.18it/s]Loading dataset:  63%|██████▎   | 63/100 [00:58<00:27,  1.34it/s]Loading dataset:  64%|██████▍   | 64/100 [00:58<00:21,  1.70it/s]Loading dataset:  65%|██████▌   | 65/100 [00:58<00:16,  2.10it/s]Loading dataset:  66%|██████▌   | 66/100 [01:00<00:31,  1.09it/s]Loading dataset:  67%|██████▋   | 67/100 [01:01<00:30,  1.08it/s]Loading dataset:  68%|██████▊   | 68/100 [01:02<00:25,  1.26it/s]Loading dataset:  70%|███████   | 70/100 [01:03<00:21,  1.37it/s]Loading dataset:  71%|███████   | 71/100 [01:04<00:28,  1.03it/s]Loading dataset:  72%|███████▏  | 72/100 [01:05<00:21,  1.32it/s]Loading dataset:  73%|███████▎  | 73/100 [01:05<00:19,  1.37it/s]Loading dataset:  74%|███████▍  | 74/100 [01:06<00:18,  1.42it/s]Loading dataset:  75%|███████▌  | 75/100 [01:08<00:24,  1.01it/s]Loading dataset:  77%|███████▋  | 77/100 [01:09<00:19,  1.18it/s]Loading dataset:  78%|███████▊  | 78/100 [01:09<00:15,  1.41it/s]Loading dataset:  79%|███████▉  | 79/100 [01:11<00:21,  1.02s/it]Loading dataset:  81%|████████  | 81/100 [01:12<00:15,  1.19it/s]Loading dataset:  82%|████████▏ | 82/100 [01:12<00:14,  1.25it/s]Loading dataset:  83%|████████▎ | 83/100 [01:14<00:18,  1.07s/it]Loading dataset:  85%|████████▌ | 85/100 [01:15<00:13,  1.15it/s]Loading dataset:  86%|████████▌ | 86/100 [01:15<00:10,  1.32it/s]Loading dataset:  87%|████████▋ | 87/100 [01:17<00:13,  1.04s/it]Loading dataset:  88%|████████▊ | 88/100 [01:17<00:09,  1.20it/s]Loading dataset:  89%|████████▉ | 89/100 [01:18<00:08,  1.37it/s]Loading dataset:  90%|█████████ | 90/100 [01:18<00:06,  1.44it/s]Loading dataset:  91%|█████████ | 91/100 [01:20<00:09,  1.05s/it]Loading dataset:  93%|█████████▎| 93/100 [01:21<00:06,  1.13it/s]Loading dataset:  94%|█████████▍| 94/100 [01:22<00:04,  1.33it/s]Loading dataset:  95%|█████████▌| 95/100 [01:23<00:05,  1.04s/it]Loading dataset:  97%|█████████▋| 97/100 [01:25<00:02,  1.08it/s]Loading dataset:  99%|█████████▉| 99/100 [01:26<00:00,  1.11it/s]Loading dataset: 100%|██████████| 100/100 [01:26<00:00,  1.15it/s]
+Loading dataset:   0%|          | 0/50 [00:00<?, ?it/s]Loading dataset:   2%|▏         | 1/50 [00:03<02:41,  3.29s/it]Loading dataset:   4%|▍         | 2/50 [00:03<01:58,  2.46s/it]Loading dataset:   8%|▊         | 4/50 [00:04<01:20,  1.75s/it]Loading dataset:  10%|█         | 5/50 [00:06<01:35,  2.12s/it]Loading dataset:  12%|█▏        | 6/50 [00:07<01:09,  1.58s/it]Loading dataset:  16%|█▌        | 8/50 [00:07<00:47,  1.13s/it]Loading dataset:  18%|█▊        | 9/50 [00:10<01:10,  1.71s/it]Loading dataset:  22%|██▏       | 11/50 [00:10<00:48,  1.24s/it]Loading dataset:  24%|██▍       | 12/50 [00:11<00:34,  1.09it/s]Loading dataset:  26%|██▌       | 13/50 [00:13<00:51,  1.39s/it]Loading dataset:  28%|██▊       | 14/50 [00:13<00:39,  1.10s/it]Loading dataset:  30%|███       | 15/50 [00:14<00:31,  1.11it/s]Loading dataset:  34%|███▍      | 17/50 [00:16<00:33,  1.01s/it]Loading dataset:  36%|███▌      | 18/50 [00:17<00:28,  1.14it/s]Loading dataset:  38%|███▊      | 19/50 [00:17<00:22,  1.39it/s]Loading dataset:  42%|████▏     | 21/50 [00:19<00:23,  1.23it/s]Loading dataset:  44%|████▍     | 22/50 [00:20<00:25,  1.12it/s]Loading dataset:  50%|█████     | 25/50 [00:22<00:19,  1.26it/s]Loading dataset:  52%|█████▏    | 26/50 [00:24<00:26,  1.12s/it]Loading dataset:  54%|█████▍    | 27/50 [00:24<00:19,  1.19it/s]Loading dataset:  58%|█████▊    | 29/50 [00:25<00:14,  1.47it/s]Loading dataset:  60%|██████    | 30/50 [00:27<00:19,  1.01it/s]Loading dataset:  62%|██████▏   | 31/50 [00:27<00:17,  1.07it/s]Loading dataset:  64%|██████▍   | 32/50 [00:28<00:14,  1.23it/s]Loading dataset:  66%|██████▌   | 33/50 [00:28<00:10,  1.61it/s]Loading dataset:  68%|██████▊   | 34/50 [00:30<00:14,  1.13it/s]Loading dataset:  70%|███████   | 35/50 [00:31<00:15,  1.06s/it]Loading dataset:  72%|███████▏  | 36/50 [00:32<00:12,  1.12it/s]Loading dataset:  76%|███████▌  | 38/50 [00:32<00:09,  1.32it/s]Loading dataset:  78%|███████▊  | 39/50 [00:35<00:12,  1.17s/it]Loading dataset:  80%|████████  | 40/50 [00:35<00:08,  1.15it/s]Loading dataset:  82%|████████▏ | 41/50 [00:35<00:05,  1.54it/s]Loading dataset:  84%|████████▍ | 42/50 [00:36<00:05,  1.45it/s]Loading dataset:  86%|████████▌ | 43/50 [00:38<00:08,  1.19s/it]Loading dataset:  90%|█████████ | 45/50 [00:38<00:04,  1.12it/s]Loading dataset:  92%|█████████▏| 46/50 [00:39<00:02,  1.35it/s]Loading dataset:  94%|█████████▍| 47/50 [00:41<00:03,  1.31s/it]Loading dataset:  98%|█████████▊| 49/50 [00:42<00:00,  1.07it/s]Loading dataset: 100%|██████████| 50/50 [00:42<00:00,  1.35it/s]Loading dataset: 100%|██████████| 50/50 [00:42<00:00,  1.18it/s]root_dir /vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/
+
+
+training transforms:  (<monai.transforms.io.dictionary.LoadImaged object at 0x7f7412a57e50>, <monai.transforms.utility.dictionary.AsChannelFirstd object at 0x7f74129f51c0>, <__main__.ConvertToMultiChannelBasedOnBratsClassesd object at 0x7f74129f5280>, <monai.transforms.spatial.dictionary.Spacingd object at 0x7f74129f52e0>, <monai.transforms.spatial.dictionary.Orientationd object at 0x7f74ad38c370>, <monai.transforms.croppad.dictionary.RandSpatialCropd object at 0x7f7412a57130>, <monai.transforms.spatial.dictionary.RandFlipd object at 0x7f7412a570d0>, <monai.transforms.intensity.dictionary.NormalizeIntensityd object at 0x7f7412a3e9a0>, <monai.transforms.intensity.dictionary.RandScaleIntensityd object at 0x7f7412a3ef10>, <monai.transforms.intensity.dictionary.RandShiftIntensityd object at 0x7f7412a3ee50>, <monai.transforms.utility.dictionary.ToTensord object at 0x7f7412a3e8b0>, <filters_and_operators.RandFourierDiskMaskd object at 0x7f7412a3e820>) 
+
+validation transforms:  (<monai.transforms.io.dictionary.LoadImaged object at 0x7f7412a3ebe0>, <monai.transforms.utility.dictionary.AsChannelFirstd object at 0x7f74129f53a0>, <__main__.ConvertToMultiChannelBasedOnBratsClassesd object at 0x7f74129f5490>, <monai.transforms.spatial.dictionary.Spacingd object at 0x7f74129f54f0>, <monai.transforms.spatial.dictionary.Orientationd object at 0x7f74129f5550>, <monai.transforms.croppad.dictionary.CenterSpatialCropd object at 0x7f74129f5610>, <monai.transforms.intensity.dictionary.NormalizeIntensityd object at 0x7f74129f56d0>, <monai.transforms.utility.dictionary.ToTensord object at 0x7f74129f5760>, <filters_and_operators.RandFourierDiskMaskd object at 0x7f74129f5820>) 
+
+Data loaders created.
+
+Model instatitated with number of parameters =  4810074
+
+ Training started... 
+
+----------
+epoch 1/180
+
+epoch 1 average loss: 0.9305
+----------
+epoch 2/180
+epoch 2 average loss: 0.9214
+saved new best metric model
+current epoch: 2 current mean dice: 0.2574 tc: 0.2191 wt: 0.4490 et: 0.1040
+best mean dice: 0.2574 at epoch: 2
+----------
+epoch 3/180
+epoch 3 average loss: 0.9116
+----------
+epoch 4/180
+epoch 4 average loss: 0.8950
+current epoch: 4 current mean dice: 0.2434 tc: 0.2042 wt: 0.4280 et: 0.0979
+best mean dice: 0.2574 at epoch: 2
+----------
+epoch 5/180
+epoch 5 average loss: 0.8707
+----------
+epoch 6/180
+epoch 6 average loss: 0.8424
+saved new best metric model
+current epoch: 6 current mean dice: 0.2788 tc: 0.2372 wt: 0.4850 et: 0.1142
+best mean dice: 0.2788 at epoch: 6
+----------
+epoch 7/180
+epoch 7 average loss: 0.8139
+----------
+epoch 8/180
+epoch 8 average loss: 0.7830
+saved new best metric model
+current epoch: 8 current mean dice: 0.3397 tc: 0.2960 wt: 0.5791 et: 0.1440
+best mean dice: 0.3397 at epoch: 8
+----------
+epoch 9/180
+epoch 9 average loss: 0.7532
+----------
+epoch 10/180
+epoch 10 average loss: 0.7242
+saved new best metric model
+current epoch: 10 current mean dice: 0.3743 tc: 0.3289 wt: 0.6323 et: 0.1618
+best mean dice: 0.3743 at epoch: 10
+----------
+epoch 11/180
+epoch 11 average loss: 0.6969
+----------
+epoch 12/180
+epoch 12 average loss: 0.6730
+saved new best metric model
+current epoch: 12 current mean dice: 0.4332 tc: 0.3917 wt: 0.7133 et: 0.1944
+best mean dice: 0.4332 at epoch: 12
+----------
+epoch 13/180
+epoch 13 average loss: 0.6489
+----------
+epoch 14/180
+epoch 14 average loss: 0.6282
+saved new best metric model
+current epoch: 14 current mean dice: 0.4589 tc: 0.4234 wt: 0.7418 et: 0.2116
+best mean dice: 0.4589 at epoch: 14
+----------
+epoch 15/180
+epoch 15 average loss: 0.6112
+----------
+epoch 16/180
+epoch 16 average loss: 0.5941
+saved new best metric model
+current epoch: 16 current mean dice: 0.4780 tc: 0.4481 wt: 0.7601 et: 0.2256
+best mean dice: 0.4780 at epoch: 16
+----------
+epoch 17/180
+epoch 17 average loss: 0.5796
+----------
+epoch 18/180
+epoch 18 average loss: 0.5665
+saved new best metric model
+current epoch: 18 current mean dice: 0.4910 tc: 0.4709 wt: 0.7629 et: 0.2392
+best mean dice: 0.4910 at epoch: 18
+----------
+epoch 19/180
+epoch 19 average loss: 0.5561
+----------
+epoch 20/180
+epoch 20 average loss: 0.5432
+saved new best metric model
+current epoch: 20 current mean dice: 0.5165 tc: 0.5188 wt: 0.7626 et: 0.2680
+best mean dice: 0.5165 at epoch: 20
+----------
+epoch 21/180
+epoch 21 average loss: 0.5297
+----------
+epoch 22/180
+epoch 22 average loss: 0.5176
+saved new best metric model
+current epoch: 22 current mean dice: 0.5472 tc: 0.5618 wt: 0.7845 et: 0.2952
+best mean dice: 0.5472 at epoch: 22
+----------
+epoch 23/180
+epoch 23 average loss: 0.5053
+----------
+epoch 24/180
+epoch 24 average loss: 0.4943
+saved new best metric model
+current epoch: 24 current mean dice: 0.5669 tc: 0.5785 wt: 0.8149 et: 0.3073
+best mean dice: 0.5669 at epoch: 24
+----------
+epoch 25/180
+epoch 25 average loss: 0.4839
+----------
+epoch 26/180
+epoch 26 average loss: 0.4733
+saved new best metric model
+current epoch: 26 current mean dice: 0.5743 tc: 0.5906 wt: 0.8212 et: 0.3112
+best mean dice: 0.5743 at epoch: 26
+----------
+epoch 27/180
+epoch 27 average loss: 0.4634
+----------
+epoch 28/180
+epoch 28 average loss: 0.4563
+saved new best metric model
+current epoch: 28 current mean dice: 0.5881 tc: 0.6168 wt: 0.8197 et: 0.3277
+best mean dice: 0.5881 at epoch: 28
+----------
+epoch 29/180
+epoch 29 average loss: 0.4484
+----------
+epoch 30/180
+epoch 30 average loss: 0.4432
+saved new best metric model
+current epoch: 30 current mean dice: 0.5900 tc: 0.6177 wt: 0.8239 et: 0.3285
+best mean dice: 0.5900 at epoch: 30
+----------
+epoch 31/180
+epoch 31 average loss: 0.4352
+----------
+epoch 32/180
+epoch 32 average loss: 0.4287
+saved new best metric model
+current epoch: 32 current mean dice: 0.5968 tc: 0.6304 wt: 0.8252 et: 0.3349
+best mean dice: 0.5968 at epoch: 32
+----------
+epoch 33/180
+epoch 33 average loss: 0.4227
+----------
+epoch 34/180
+epoch 34 average loss: 0.4176
+saved new best metric model
+current epoch: 34 current mean dice: 0.6161 tc: 0.6600 wt: 0.8351 et: 0.3533
+best mean dice: 0.6161 at epoch: 34
+----------
+epoch 35/180
+epoch 35 average loss: 0.4131
+----------
+epoch 36/180
+epoch 36 average loss: 0.4074
+current epoch: 36 current mean dice: 0.6144 tc: 0.6629 wt: 0.8248 et: 0.3555
+best mean dice: 0.6161 at epoch: 34
+----------
+epoch 37/180
+epoch 37 average loss: 0.4196
+----------
+epoch 38/180
+epoch 38 average loss: 0.4046
+saved new best metric model
+current epoch: 38 current mean dice: 0.6234 tc: 0.6691 wt: 0.8424 et: 0.3587
+best mean dice: 0.6234 at epoch: 38
+----------
+epoch 39/180
+epoch 39 average loss: 0.3984
+----------
+epoch 40/180
+epoch 40 average loss: 0.3933
+saved new best metric model
+current epoch: 40 current mean dice: 0.6373 tc: 0.6886 wt: 0.8487 et: 0.3747
+best mean dice: 0.6373 at epoch: 40
+----------
+epoch 41/180
+epoch 41 average loss: 0.3859
+----------
+epoch 42/180
+epoch 42 average loss: 0.3863
+current epoch: 42 current mean dice: 0.6271 tc: 0.6788 wt: 0.8359 et: 0.3666
+best mean dice: 0.6373 at epoch: 40
+----------
+epoch 43/180
+epoch 43 average loss: 0.3844
+----------
+epoch 44/180
+epoch 44 average loss: 0.3790
+saved new best metric model
+current epoch: 44 current mean dice: 0.6484 tc: 0.7132 wt: 0.8477 et: 0.3843
+best mean dice: 0.6484 at epoch: 44
+----------
+epoch 45/180
+epoch 45 average loss: 0.3738
+----------
+epoch 46/180
+epoch 46 average loss: 0.3744
+current epoch: 46 current mean dice: 0.6457 tc: 0.7036 wt: 0.8538 et: 0.3797
+best mean dice: 0.6484 at epoch: 44
+----------
+epoch 47/180
+epoch 47 average loss: 0.3695
+----------
+epoch 48/180
+epoch 48 average loss: 0.3684
+saved new best metric model
+current epoch: 48 current mean dice: 0.6502 tc: 0.7108 wt: 0.8537 et: 0.3859
+best mean dice: 0.6502 at epoch: 48
+----------
+epoch 49/180
+epoch 49 average loss: 0.3658
+----------
+epoch 50/180
+epoch 50 average loss: 0.3627
+saved new best metric model
+current epoch: 50 current mean dice: 0.6580 tc: 0.7249 wt: 0.8577 et: 0.3914
+best mean dice: 0.6580 at epoch: 50
+----------
+epoch 51/180
+epoch 51 average loss: 0.3592
+----------
+epoch 52/180
+epoch 52 average loss: 0.3562
+current epoch: 52 current mean dice: 0.6531 tc: 0.7173 wt: 0.8554 et: 0.3867
+best mean dice: 0.6580 at epoch: 50
+----------
+epoch 53/180
+epoch 53 average loss: 0.3578
+----------
+epoch 54/180
+epoch 54 average loss: 0.3542
+saved new best metric model
+current epoch: 54 current mean dice: 0.6610 tc: 0.7310 wt: 0.8590 et: 0.3930
+best mean dice: 0.6610 at epoch: 54
+----------
+epoch 55/180
+epoch 55 average loss: 0.3492
+----------
+epoch 56/180
+epoch 56 average loss: 0.3482
+saved new best metric model
+current epoch: 56 current mean dice: 0.6628 tc: 0.7319 wt: 0.8574 et: 0.3993
+best mean dice: 0.6628 at epoch: 56
+----------
+epoch 57/180
+epoch 57 average loss: 0.3464
+----------
+epoch 58/180
+epoch 58 average loss: 0.3451
+current epoch: 58 current mean dice: 0.6610 tc: 0.7267 wt: 0.8592 et: 0.3970
+best mean dice: 0.6628 at epoch: 56
+----------
+epoch 59/180
+epoch 59 average loss: 0.3430
+----------
+epoch 60/180
+epoch 60 average loss: 0.3427
+saved new best metric model
+current epoch: 60 current mean dice: 0.6675 tc: 0.7379 wt: 0.8625 et: 0.4020
+best mean dice: 0.6675 at epoch: 60
+----------
+epoch 61/180
+epoch 61 average loss: 0.3387
+----------
+epoch 62/180
+epoch 62 average loss: 0.3366
+current epoch: 62 current mean dice: 0.6660 tc: 0.7399 wt: 0.8611 et: 0.3969
+best mean dice: 0.6675 at epoch: 60
+----------
+epoch 63/180
+epoch 63 average loss: 0.3360
+----------
+epoch 64/180
+epoch 64 average loss: 0.3286
+saved new best metric model
+current epoch: 64 current mean dice: 0.6740 tc: 0.7513 wt: 0.8632 et: 0.4074
+best mean dice: 0.6740 at epoch: 64
+----------
+epoch 65/180
+epoch 65 average loss: 0.3303
+----------
+epoch 66/180
+epoch 66 average loss: 0.3262
+current epoch: 66 current mean dice: 0.6670 tc: 0.7391 wt: 0.8621 et: 0.3998
+best mean dice: 0.6740 at epoch: 64
+----------
+epoch 67/180
+epoch 67 average loss: 0.3242
+----------
+epoch 68/180
+epoch 68 average loss: 0.3184
+saved new best metric model
+current epoch: 68 current mean dice: 0.6786 tc: 0.7573 wt: 0.8600 et: 0.4183
+best mean dice: 0.6786 at epoch: 68
+----------
+epoch 69/180
+epoch 69 average loss: 0.3116
+----------
+epoch 70/180
+epoch 70 average loss: 0.3082
+saved new best metric model
+current epoch: 70 current mean dice: 0.6824 tc: 0.7652 wt: 0.8652 et: 0.4169
+best mean dice: 0.6824 at epoch: 70
+----------
+epoch 71/180
+epoch 71 average loss: 0.3033
+----------
+epoch 72/180
+epoch 72 average loss: 0.3018
+current epoch: 72 current mean dice: 0.6673 tc: 0.7409 wt: 0.8537 et: 0.4073
+best mean dice: 0.6824 at epoch: 70
+----------
+epoch 73/180
+epoch 73 average loss: 0.3058
+----------
+epoch 74/180
+epoch 74 average loss: 0.2917
+saved new best metric model
+current epoch: 74 current mean dice: 0.6886 tc: 0.7609 wt: 0.8677 et: 0.4371
+best mean dice: 0.6886 at epoch: 74
+----------
+epoch 75/180
+epoch 75 average loss: 0.2768
+----------
+epoch 76/180
+epoch 76 average loss: 0.2693
+saved new best metric model
+current epoch: 76 current mean dice: 0.6897 tc: 0.7625 wt: 0.8692 et: 0.4375
+best mean dice: 0.6897 at epoch: 76
+----------
+epoch 77/180
+epoch 77 average loss: 0.2723
+----------
+epoch 78/180
+epoch 78 average loss: 0.2624
+saved new best metric model
+current epoch: 78 current mean dice: 0.6930 tc: 0.7535 wt: 0.8669 et: 0.4586
+best mean dice: 0.6930 at epoch: 78
+----------
+epoch 79/180
+epoch 79 average loss: 0.2602
+----------
+epoch 80/180
+epoch 80 average loss: 0.2491
+saved new best metric model
+current epoch: 80 current mean dice: 0.6987 tc: 0.7655 wt: 0.8687 et: 0.4620
+best mean dice: 0.6987 at epoch: 80
+----------
+epoch 81/180
+epoch 81 average loss: 0.2425
+----------
+epoch 82/180
+epoch 82 average loss: 0.2423
+current epoch: 82 current mean dice: 0.6872 tc: 0.7679 wt: 0.8649 et: 0.4289
+best mean dice: 0.6987 at epoch: 80
+----------
+epoch 83/180
+epoch 83 average loss: 0.2364
+----------
+epoch 84/180
+epoch 84 average loss: 0.2375
+saved new best metric model
+current epoch: 84 current mean dice: 0.7003 tc: 0.7752 wt: 0.8683 et: 0.4573
+best mean dice: 0.7003 at epoch: 84
+----------
+epoch 85/180
+epoch 85 average loss: 0.2339
+----------
+epoch 86/180
+epoch 86 average loss: 0.2342
+saved new best metric model
+current epoch: 86 current mean dice: 0.7059 tc: 0.7723 wt: 0.8666 et: 0.4789
+best mean dice: 0.7059 at epoch: 86
+----------
+epoch 87/180
+epoch 87 average loss: 0.2322
+----------
+epoch 88/180
+epoch 88 average loss: 0.2282
+saved new best metric model
+current epoch: 88 current mean dice: 0.7127 tc: 0.7798 wt: 0.8727 et: 0.4857
+best mean dice: 0.7127 at epoch: 88
+----------
+epoch 89/180
+epoch 89 average loss: 0.2295
+----------
+epoch 90/180
+epoch 90 average loss: 0.2272
+saved new best metric model
+current epoch: 90 current mean dice: 0.7158 tc: 0.7877 wt: 0.8765 et: 0.4832
+best mean dice: 0.7158 at epoch: 90
+----------
+epoch 91/180
+epoch 91 average loss: 0.2281
+----------
+epoch 92/180
+epoch 92 average loss: 0.2269
+saved new best metric model
+current epoch: 92 current mean dice: 0.7192 tc: 0.7887 wt: 0.8758 et: 0.4930
+best mean dice: 0.7192 at epoch: 92
+----------
+epoch 93/180
+epoch 93 average loss: 0.2255
+----------
+epoch 94/180
+epoch 94 average loss: 0.2220
+current epoch: 94 current mean dice: 0.6954 tc: 0.7671 wt: 0.8716 et: 0.4476
+best mean dice: 0.7192 at epoch: 92
+----------
+epoch 95/180
+epoch 95 average loss: 0.2185
+----------
+epoch 96/180
+epoch 96 average loss: 0.2203
+current epoch: 96 current mean dice: 0.7090 tc: 0.7794 wt: 0.8743 et: 0.4733
+best mean dice: 0.7192 at epoch: 92
+----------
+epoch 97/180
+epoch 97 average loss: 0.2170
+----------
+epoch 98/180
+epoch 98 average loss: 0.2176
+current epoch: 98 current mean dice: 0.7123 tc: 0.7782 wt: 0.8765 et: 0.4823
+best mean dice: 0.7192 at epoch: 92
+----------
+epoch 99/180
+epoch 99 average loss: 0.2182
+----------
+epoch 100/180
+epoch 100 average loss: 0.2130
+current epoch: 100 current mean dice: 0.7171 tc: 0.7846 wt: 0.8760 et: 0.4908
+best mean dice: 0.7192 at epoch: 92
+----------
+epoch 101/180
+epoch 101 average loss: 0.2153
+----------
+epoch 102/180
+epoch 102 average loss: 0.2145
+current epoch: 102 current mean dice: 0.7159 tc: 0.7878 wt: 0.8783 et: 0.4815
+best mean dice: 0.7192 at epoch: 92
+----------
+epoch 103/180
+epoch 103 average loss: 0.2128
+----------
+epoch 104/180
+epoch 104 average loss: 0.2157
+current epoch: 104 current mean dice: 0.7175 tc: 0.7837 wt: 0.8762 et: 0.4926
+best mean dice: 0.7192 at epoch: 92
+----------
+epoch 105/180
+epoch 105 average loss: 0.2107
+----------
+epoch 106/180
+epoch 106 average loss: 0.2145
+saved new best metric model
+current epoch: 106 current mean dice: 0.7213 tc: 0.7867 wt: 0.8791 et: 0.4982
+best mean dice: 0.7213 at epoch: 106
+----------
+epoch 107/180
+epoch 107 average loss: 0.2155
+----------
+epoch 108/180
+epoch 108 average loss: 0.2115
+current epoch: 108 current mean dice: 0.7167 tc: 0.7882 wt: 0.8793 et: 0.4827
+best mean dice: 0.7213 at epoch: 106
+----------
+epoch 109/180
+epoch 109 average loss: 0.2093
+----------
+epoch 110/180
+epoch 110 average loss: 0.2111
+saved new best metric model
+current epoch: 110 current mean dice: 0.7241 tc: 0.7955 wt: 0.8796 et: 0.4972
+best mean dice: 0.7241 at epoch: 110
+----------
+epoch 111/180
+epoch 111 average loss: 0.2114
+----------
+epoch 112/180
+epoch 112 average loss: 0.2078
+current epoch: 112 current mean dice: 0.7210 tc: 0.7892 wt: 0.8799 et: 0.4939
+best mean dice: 0.7241 at epoch: 110
+----------
+epoch 113/180
+epoch 113 average loss: 0.2063
+----------
+epoch 114/180
+epoch 114 average loss: 0.2080
+saved new best metric model
+current epoch: 114 current mean dice: 0.7272 tc: 0.7977 wt: 0.8807 et: 0.5033
+best mean dice: 0.7272 at epoch: 114
+----------
+epoch 115/180
+epoch 115 average loss: 0.2078
+----------
+epoch 116/180
+epoch 116 average loss: 0.2057
+current epoch: 116 current mean dice: 0.7220 tc: 0.7916 wt: 0.8798 et: 0.4946
+best mean dice: 0.7272 at epoch: 114
+----------
+epoch 117/180
+epoch 117 average loss: 0.2043
+----------
+epoch 118/180
+epoch 118 average loss: 0.2050
+current epoch: 118 current mean dice: 0.7191 tc: 0.7869 wt: 0.8790 et: 0.4913
+best mean dice: 0.7272 at epoch: 114
+----------
+epoch 119/180
+epoch 119 average loss: 0.2064
+----------
+epoch 120/180
+epoch 120 average loss: 0.2029
+current epoch: 120 current mean dice: 0.7257 tc: 0.7887 wt: 0.8794 et: 0.5091
+best mean dice: 0.7272 at epoch: 114
+----------
+epoch 121/180
+epoch 121 average loss: 0.2061
+----------
+epoch 122/180
+epoch 122 average loss: 0.2036
+current epoch: 122 current mean dice: 0.7245 tc: 0.7938 wt: 0.8779 et: 0.5018
+best mean dice: 0.7272 at epoch: 114
+----------
+epoch 123/180
+epoch 123 average loss: 0.2142
+----------
+epoch 124/180
+epoch 124 average loss: 0.2052
+current epoch: 124 current mean dice: 0.7192 tc: 0.7878 wt: 0.8811 et: 0.4886
+best mean dice: 0.7272 at epoch: 114
+----------
+epoch 125/180
+epoch 125 average loss: 0.2067
+----------
+epoch 126/180
+epoch 126 average loss: 0.2016
+current epoch: 126 current mean dice: 0.7227 tc: 0.7932 wt: 0.8785 et: 0.4964
+best mean dice: 0.7272 at epoch: 114
+----------
+epoch 127/180
+epoch 127 average loss: 0.2030
+----------
+epoch 128/180
+epoch 128 average loss: 0.2043
+current epoch: 128 current mean dice: 0.7202 tc: 0.7869 wt: 0.8810 et: 0.4927
+best mean dice: 0.7272 at epoch: 114
+----------
+epoch 129/180
+epoch 129 average loss: 0.2025
+----------
+epoch 130/180
+epoch 130 average loss: 0.2011
+current epoch: 130 current mean dice: 0.7269 tc: 0.7947 wt: 0.8813 et: 0.5045
+best mean dice: 0.7272 at epoch: 114
+----------
+epoch 131/180
+epoch 131 average loss: 0.1989
+----------
+epoch 132/180
+epoch 132 average loss: 0.2020
+current epoch: 132 current mean dice: 0.7181 tc: 0.7878 wt: 0.8793 et: 0.4872
+best mean dice: 0.7272 at epoch: 114
+----------
+epoch 133/180
+epoch 133 average loss: 0.2003
+----------
+epoch 134/180
+epoch 134 average loss: 0.1993
+saved new best metric model
+current epoch: 134 current mean dice: 0.7278 tc: 0.7962 wt: 0.8804 et: 0.5067
+best mean dice: 0.7278 at epoch: 134
+----------
+epoch 135/180
+epoch 135 average loss: 0.1992
+----------
+epoch 136/180
+epoch 136 average loss: 0.2027
+current epoch: 136 current mean dice: 0.7189 tc: 0.7879 wt: 0.8800 et: 0.4889
+best mean dice: 0.7278 at epoch: 134
+----------
+epoch 137/180
+epoch 137 average loss: 0.2010
+----------
+epoch 138/180
+epoch 138 average loss: 0.1993
+saved new best metric model
+current epoch: 138 current mean dice: 0.7310 tc: 0.8001 wt: 0.8808 et: 0.5121
+best mean dice: 0.7310 at epoch: 138
+----------
+epoch 139/180
+epoch 139 average loss: 0.1999
+----------
+epoch 140/180
+epoch 140 average loss: 0.1983
+current epoch: 140 current mean dice: 0.7267 tc: 0.8004 wt: 0.8808 et: 0.4990
+best mean dice: 0.7310 at epoch: 138
+----------
+epoch 141/180
+epoch 141 average loss: 0.1964
+----------
+epoch 142/180
+epoch 142 average loss: 0.2030
+current epoch: 142 current mean dice: 0.7247 tc: 0.7891 wt: 0.8784 et: 0.5066
+best mean dice: 0.7310 at epoch: 138
+----------
+epoch 143/180
+epoch 143 average loss: 0.1975
+----------
+epoch 144/180
+epoch 144 average loss: 0.1972
+current epoch: 144 current mean dice: 0.7306 tc: 0.8038 wt: 0.8807 et: 0.5073
+best mean dice: 0.7310 at epoch: 138
+----------
+epoch 145/180
+epoch 145 average loss: 0.1977
+----------
+epoch 146/180
+epoch 146 average loss: 0.1954
+current epoch: 146 current mean dice: 0.7291 tc: 0.7925 wt: 0.8806 et: 0.5142
+best mean dice: 0.7310 at epoch: 138
+----------
+epoch 147/180
+epoch 147 average loss: 0.1953
+----------
+epoch 148/180
+epoch 148 average loss: 0.1942
+current epoch: 148 current mean dice: 0.7268 tc: 0.7912 wt: 0.8798 et: 0.5094
+best mean dice: 0.7310 at epoch: 138
+----------
+epoch 149/180
+epoch 149 average loss: 0.1976
+----------
+epoch 150/180
+epoch 150 average loss: 0.1949
+current epoch: 150 current mean dice: 0.7291 tc: 0.8018 wt: 0.8828 et: 0.5028
+best mean dice: 0.7310 at epoch: 138
+----------
+epoch 151/180
+epoch 151 average loss: 0.1936
+----------
+epoch 152/180
+epoch 152 average loss: 0.1938
+current epoch: 152 current mean dice: 0.7268 tc: 0.7970 wt: 0.8803 et: 0.5033
+best mean dice: 0.7310 at epoch: 138
+----------
+epoch 153/180
+epoch 153 average loss: 0.1959
+----------
+epoch 154/180
+epoch 154 average loss: 0.1935
+current epoch: 154 current mean dice: 0.7274 tc: 0.7959 wt: 0.8793 et: 0.5069
+best mean dice: 0.7310 at epoch: 138
+----------
+epoch 155/180
+epoch 155 average loss: 0.1944
+----------
+epoch 156/180
+epoch 156 average loss: 0.1910
+saved new best metric model
+current epoch: 156 current mean dice: 0.7313 tc: 0.7999 wt: 0.8833 et: 0.5107
+best mean dice: 0.7313 at epoch: 156
+----------
+epoch 157/180
+epoch 157 average loss: 0.1904
+----------
+epoch 158/180
+epoch 158 average loss: 0.1943
+current epoch: 158 current mean dice: 0.7217 tc: 0.7981 wt: 0.8820 et: 0.4851
+best mean dice: 0.7313 at epoch: 156
+----------
+epoch 159/180
+epoch 159 average loss: 0.1942
+----------
+epoch 160/180
+epoch 160 average loss: 0.1908
+saved new best metric model
+current epoch: 160 current mean dice: 0.7324 tc: 0.8001 wt: 0.8826 et: 0.5147
+best mean dice: 0.7324 at epoch: 160
+----------
+epoch 161/180
+epoch 161 average loss: 0.1925
+----------
+epoch 162/180
+epoch 162 average loss: 0.1914
+current epoch: 162 current mean dice: 0.7319 tc: 0.8032 wt: 0.8825 et: 0.5102
+best mean dice: 0.7324 at epoch: 160
+----------
+epoch 163/180
+epoch 163 average loss: 0.1896
+----------
+epoch 164/180
+epoch 164 average loss: 0.1917
+current epoch: 164 current mean dice: 0.7290 tc: 0.8021 wt: 0.8827 et: 0.5024
+best mean dice: 0.7324 at epoch: 160
+----------
+epoch 165/180
+epoch 165 average loss: 0.1924
+----------
+epoch 166/180
+epoch 166 average loss: 0.1906
+current epoch: 166 current mean dice: 0.7270 tc: 0.7966 wt: 0.8794 et: 0.5049
+best mean dice: 0.7324 at epoch: 160
+----------
+epoch 167/180
+epoch 167 average loss: 0.1893
+----------
+epoch 168/180
+epoch 168 average loss: 0.1895
+current epoch: 168 current mean dice: 0.7317 tc: 0.8023 wt: 0.8819 et: 0.5108
+best mean dice: 0.7324 at epoch: 160
+----------
+epoch 169/180
+epoch 169 average loss: 0.1923
+----------
+epoch 170/180
+epoch 170 average loss: 0.1895
+current epoch: 170 current mean dice: 0.7292 tc: 0.7984 wt: 0.8836 et: 0.5056
+best mean dice: 0.7324 at epoch: 160
+----------
+epoch 171/180
+epoch 171 average loss: 0.1900
+----------
+epoch 172/180
+epoch 172 average loss: 0.1884
+current epoch: 172 current mean dice: 0.7311 tc: 0.8006 wt: 0.8828 et: 0.5098
+best mean dice: 0.7324 at epoch: 160
+----------
+epoch 173/180
+epoch 173 average loss: 0.1900
+----------
+epoch 174/180
+epoch 174 average loss: 0.1907
+saved new best metric model
+current epoch: 174 current mean dice: 0.7333 tc: 0.8020 wt: 0.8836 et: 0.5144
+best mean dice: 0.7333 at epoch: 174
+----------
+epoch 175/180
+epoch 175 average loss: 0.1867
+----------
+epoch 176/180
+epoch 176 average loss: 0.1882
+current epoch: 176 current mean dice: 0.7305 tc: 0.8004 wt: 0.8824 et: 0.5089
+best mean dice: 0.7333 at epoch: 174
+----------
+epoch 177/180
+epoch 177 average loss: 0.1881
+----------
+epoch 178/180
+epoch 178 average loss: 0.1891
+current epoch: 178 current mean dice: 0.7321 tc: 0.8050 wt: 0.8834 et: 0.5078
+best mean dice: 0.7333 at epoch: 174
+----------
+epoch 179/180
+epoch 179 average loss: 0.1866
+----------
+epoch 180/180
+epoch 180 average loss: 0.1878
+current epoch: 180 current mean dice: 0.7254 tc: 0.7973 wt: 0.8792 et: 0.4996
+best mean dice: 0.7333 at epoch: 174
+train completed, best_metric: 0.7333 at epoch: 174
+Plotting learning curves

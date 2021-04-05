@@ -1,0 +1,4 @@
+./10_scripts/*slurm*out
+./10_scripts/*SUBMIT.sh
+./10_scripts/*log
+

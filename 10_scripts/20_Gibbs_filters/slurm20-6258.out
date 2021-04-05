@@ -1,0 +1,24 @@
+Wed Mar 31 09:38:11 2021       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 460.32.03    Driver Version: 460.32.03    CUDA Version: 11.2     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla T4            On   | 00000000:00:0C.0 Off |                    0 |
+| N/A   42C    P8    11W /  70W |      0MiB / 15109MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+Traceback (most recent call last):
+  File "/homes/yc7620/Documents/medical-vision-textural-bias/10_scripts/20_Gibbs_filters/stylized_gibbs55_3_epochs.py", line 53, in <module>
+    from filters_and_operators import RandFourierDiskMaskd
+ModuleNotFoundError: No module named 'filters_and_operators'
