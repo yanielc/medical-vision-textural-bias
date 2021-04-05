@@ -1,81 +1,0 @@
-Wed Mar 31 09:40:45 2021       
-+-----------------------------------------------------------------------------+
-| NVIDIA-SMI 460.32.03    Driver Version: 460.32.03    CUDA Version: 11.2     |
-|-------------------------------+----------------------+----------------------+
-| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
-|                               |                      |               MIG M. |
-|===============================+======================+======================|
-|   0  Tesla T4            On   | 00000000:00:0C.0 Off |                    0 |
-| N/A   42C    P8    11W /  70W |      0MiB / 15109MiB |      0%      Default |
-|                               |                      |                  N/A |
-+-------------------------------+----------------------+----------------------+
-                                                                               
-+-----------------------------------------------------------------------------+
-| Processes:                                                                  |
-|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
-|        ID   ID                                                   Usage      |
-|=============================================================================|
-|  No running processes found                                                 |
-+-----------------------------------------------------------------------------+
-MONAI version: 0.5.dev2113
-Numpy version: 1.19.2
-Pytorch version: 1.8.0
-MONAI flags: HAS_EXT = False, USE_COMPILED = False
-MONAI rev id: b3cc668c924b2a7e6b822416f4d920a098c27704
-
-Optional dependencies:
-Pytorch Ignite version: 0.4.4
-Nibabel version: 3.2.1
-scikit-image version: 0.17.2
-Pillow version: 8.1.2
-Tensorboard version: 1.15.0
-gdown version: 3.12.2
-TorchVision version: 0.9.0
-ITK version: NOT INSTALLED or UNKNOWN VERSION.
-tqdm version: 4.50.2
-lmdb version: NOT INSTALLED or UNKNOWN VERSION.
-psutil version: NOT INSTALLED or UNKNOWN VERSION.
-
-For details about installing the optional dependencies, please visit:
-    https://docs.monai.io/en/latest/installation.html#installing-the-recommended-dependencies
-
-Loading dataset:   0%|          | 0/100 [00:00<?, ?it/s]Loading dataset:   1%|          | 1/100 [00:04<07:40,  4.65s/it]Loading dataset:   4%|▍         | 4/100 [00:04<05:14,  3.28s/it]Loading dataset:   5%|▌         | 5/100 [00:08<05:16,  3.33s/it]Loading dataset:   7%|▋         | 7/100 [00:08<03:39,  2.36s/it]Loading dataset:   8%|▊         | 8/100 [00:08<02:35,  1.69s/it]Loading dataset:   9%|▉         | 9/100 [00:12<03:22,  2.23s/it]Loading dataset:  12%|█▏        | 12/100 [00:12<02:18,  1.57s/it]Loading dataset:  14%|█▍        | 14/100 [00:15<02:16,  1.59s/it]Loading dataset:  16%|█▌        | 16/100 [00:15<01:39,  1.18s/it]Loading dataset:  17%|█▋        | 17/100 [00:18<02:19,  1.68s/it]Loading dataset:  18%|█▊        | 18/100 [00:19<01:44,  1.28s/it]Loading dataset:  19%|█▉        | 19/100 [00:19<01:17,  1.05it/s]Loading dataset:  20%|██        | 20/100 [00:19<00:56,  1.41it/s]Loading dataset:  21%|██        | 21/100 [00:22<01:47,  1.37s/it]Loading dataset:  22%|██▏       | 22/100 [00:22<01:27,  1.12s/it]Loading dataset:  25%|██▌       | 25/100 [00:25<01:20,  1.07s/it]Loading dataset:  26%|██▌       | 26/100 [00:26<01:02,  1.19it/s]Loading dataset:  27%|██▋       | 27/100 [00:26<00:52,  1.39it/s]Loading dataset:  29%|██▉       | 29/100 [00:29<01:08,  1.04it/s]Loading dataset:  30%|███       | 30/100 [00:29<00:53,  1.31it/s]Loading dataset:  32%|███▏      | 32/100 [00:30<00:37,  1.80it/s]Loading dataset:  33%|███▎      | 33/100 [00:33<01:32,  1.38s/it]Loading dataset:  35%|███▌      | 35/100 [00:33<01:05,  1.01s/it]Loading dataset:  36%|███▌      | 36/100 [00:33<00:47,  1.34it/s]Loading dataset:  37%|███▋      | 37/100 [00:37<01:37,  1.55s/it]Loading dataset:  39%|███▉      | 39/100 [00:37<01:07,  1.11s/it]Loading dataset:  40%|████      | 40/100 [00:37<00:48,  1.23it/s]Loading dataset:  41%|████      | 41/100 [00:41<01:36,  1.64s/it]Loading dataset:  44%|████▍     | 44/100 [00:41<01:05,  1.17s/it]Loading dataset:  45%|████▌     | 45/100 [00:44<01:43,  1.88s/it]Loading dataset:  49%|████▉     | 49/100 [00:48<01:20,  1.58s/it]Loading dataset:  50%|█████     | 50/100 [00:48<00:57,  1.16s/it]Loading dataset:  53%|█████▎    | 53/100 [00:51<00:54,  1.16s/it]Loading dataset:  54%|█████▍    | 54/100 [00:52<00:42,  1.07it/s]Loading dataset:  57%|█████▋    | 57/100 [00:55<00:42,  1.02it/s]Loading dataset:  58%|█████▊    | 58/100 [00:55<00:32,  1.30it/s]Loading dataset:  61%|██████    | 61/100 [00:59<00:33,  1.17it/s]Loading dataset:  62%|██████▏   | 62/100 [00:59<00:26,  1.42it/s]Loading dataset:  63%|██████▎   | 63/100 [00:59<00:21,  1.76it/s]Loading dataset:  65%|██████▌   | 65/100 [01:02<00:29,  1.20it/s]Loading dataset:  66%|██████▌   | 66/100 [01:03<00:24,  1.37it/s]Loading dataset:  68%|██████▊   | 68/100 [01:03<00:17,  1.87it/s]Loading dataset:  69%|██████▉   | 69/100 [01:06<00:40,  1.31s/it]Loading dataset:  71%|███████   | 71/100 [01:06<00:28,  1.03it/s]Loading dataset:  73%|███████▎  | 73/100 [01:10<00:31,  1.18s/it]Loading dataset:  76%|███████▌  | 76/100 [01:10<00:20,  1.18it/s]Loading dataset:  77%|███████▋  | 77/100 [01:13<00:35,  1.54s/it]Loading dataset:  79%|███████▉  | 79/100 [01:13<00:23,  1.12s/it]Loading dataset:  80%|████████  | 80/100 [01:13<00:16,  1.21it/s]Loading dataset:  81%|████████  | 81/100 [01:16<00:26,  1.41s/it]Loading dataset:  82%|████████▏ | 82/100 [01:17<00:20,  1.12s/it]Loading dataset:  83%|████████▎ | 83/100 [01:17<00:14,  1.19it/s]Loading dataset:  85%|████████▌ | 85/100 [01:20<00:15,  1.02s/it]Loading dataset:  86%|████████▌ | 86/100 [01:20<00:12,  1.14it/s]Loading dataset:  87%|████████▋ | 87/100 [01:20<00:08,  1.50it/s]Loading dataset:  89%|████████▉ | 89/100 [01:23<00:09,  1.14it/s]Loading dataset:  90%|█████████ | 90/100 [01:24<00:08,  1.12it/s]Loading dataset:  93%|█████████▎| 93/100 [01:26<00:06,  1.14it/s]Loading dataset:  94%|█████████▍| 94/100 [01:27<00:04,  1.32it/s]Loading dataset:  95%|█████████▌| 95/100 [01:27<00:03,  1.58it/s]Loading dataset:  97%|█████████▋| 97/100 [01:30<00:02,  1.14it/s]Loading dataset:  98%|█████████▊| 98/100 [01:31<00:01,  1.31it/s]Loading dataset: 100%|██████████| 100/100 [01:31<00:00,  1.10it/s]
-Loading dataset:   0%|          | 0/96 [00:00<?, ?it/s]Loading dataset:   1%|          | 1/96 [00:03<06:05,  3.84s/it]Loading dataset:   2%|▏         | 2/96 [00:04<04:17,  2.74s/it]Loading dataset:   5%|▌         | 5/96 [00:07<03:28,  2.29s/it]Loading dataset:   9%|▉         | 9/96 [00:11<02:41,  1.85s/it]Loading dataset:  10%|█         | 10/96 [00:11<01:59,  1.39s/it]Loading dataset:  14%|█▎        | 13/96 [00:14<01:48,  1.31s/it]Loading dataset:  15%|█▍        | 14/96 [00:15<01:23,  1.02s/it]Loading dataset:  18%|█▊        | 17/96 [00:18<01:21,  1.03s/it]Loading dataset:  19%|█▉        | 18/96 [00:18<00:59,  1.32it/s]Loading dataset:  20%|█▉        | 19/96 [00:18<00:45,  1.69it/s]Loading dataset:  21%|██        | 20/96 [00:18<00:36,  2.07it/s]Loading dataset:  22%|██▏       | 21/96 [00:21<01:35,  1.27s/it]Loading dataset:  24%|██▍       | 23/96 [00:22<01:09,  1.05it/s]Loading dataset:  25%|██▌       | 24/96 [00:22<00:51,  1.40it/s]Loading dataset:  26%|██▌       | 25/96 [00:25<01:37,  1.37s/it]Loading dataset:  27%|██▋       | 26/96 [00:25<01:12,  1.04s/it]Loading dataset:  28%|██▊       | 27/96 [00:25<00:54,  1.27it/s]Loading dataset:  29%|██▉       | 28/96 [00:26<00:41,  1.64it/s]Loading dataset:  30%|███       | 29/96 [00:29<01:29,  1.33s/it]Loading dataset:  31%|███▏      | 30/96 [00:29<01:17,  1.17s/it]Loading dataset:  34%|███▍      | 33/96 [00:32<01:10,  1.12s/it]Loading dataset:  35%|███▌      | 34/96 [00:33<00:52,  1.18it/s]Loading dataset:  38%|███▊      | 36/96 [00:33<00:39,  1.52it/s]Loading dataset:  39%|███▊      | 37/96 [00:36<01:22,  1.39s/it]Loading dataset:  40%|███▉      | 38/96 [00:36<01:00,  1.05s/it]Loading dataset:  41%|████      | 39/96 [00:37<00:45,  1.26it/s]Loading dataset:  43%|████▎     | 41/96 [00:40<00:59,  1.09s/it]Loading dataset:  45%|████▍     | 43/96 [00:41<00:43,  1.23it/s]Loading dataset:  47%|████▋     | 45/96 [00:44<00:54,  1.07s/it]Loading dataset:  48%|████▊     | 46/96 [00:44<00:45,  1.11it/s]Loading dataset:  51%|█████     | 49/96 [00:48<00:45,  1.04it/s]Loading dataset:  52%|█████▏    | 50/96 [00:48<00:34,  1.33it/s]Loading dataset:  55%|█████▌    | 53/96 [00:51<00:37,  1.16it/s]Loading dataset:  56%|█████▋    | 54/96 [00:52<00:28,  1.50it/s]Loading dataset:  57%|█████▋    | 55/96 [00:52<00:24,  1.69it/s]Loading dataset:  59%|█████▉    | 57/96 [00:55<00:34,  1.14it/s]Loading dataset:  60%|██████    | 58/96 [00:55<00:25,  1.46it/s]Loading dataset:  61%|██████▏   | 59/96 [00:55<00:19,  1.88it/s]Loading dataset:  64%|██████▎   | 61/96 [00:58<00:29,  1.20it/s]Loading dataset:  65%|██████▍   | 62/96 [00:59<00:20,  1.63it/s]Loading dataset:  66%|██████▌   | 63/96 [00:59<00:20,  1.59it/s]Loading dataset:  68%|██████▊   | 65/96 [01:03<00:29,  1.04it/s]Loading dataset:  71%|███████   | 68/96 [01:03<00:19,  1.41it/s]Loading dataset:  72%|███████▏  | 69/96 [01:06<00:36,  1.36s/it]Loading dataset:  73%|███████▎  | 70/96 [01:06<00:26,  1.02s/it]Loading dataset:  75%|███████▌  | 72/96 [01:07<00:19,  1.25it/s]Loading dataset:  76%|███████▌  | 73/96 [01:10<00:32,  1.41s/it]Loading dataset:  77%|███████▋  | 74/96 [01:10<00:24,  1.13s/it]Loading dataset:  80%|████████  | 77/96 [01:13<00:20,  1.09s/it]Loading dataset:  81%|████████▏ | 78/96 [01:14<00:16,  1.09it/s]Loading dataset:  84%|████████▍ | 81/96 [01:17<00:14,  1.03it/s]Loading dataset:  85%|████████▌ | 82/96 [01:17<00:11,  1.24it/s]Loading dataset:  86%|████████▋ | 83/96 [01:17<00:08,  1.58it/s]Loading dataset:  89%|████████▊ | 85/96 [01:20<00:09,  1.16it/s]Loading dataset:  90%|████████▉ | 86/96 [01:21<00:07,  1.27it/s]Loading dataset:  92%|█████████▏| 88/96 [01:21<00:04,  1.65it/s]Loading dataset:  93%|█████████▎| 89/96 [01:24<00:08,  1.20s/it]Loading dataset:  94%|█████████▍| 90/96 [01:24<00:05,  1.06it/s]Loading dataset:  95%|█████████▍| 91/96 [01:25<00:04,  1.21it/s]Loading dataset:  96%|█████████▌| 92/96 [01:25<00:02,  1.56it/s]Loading dataset:  97%|█████████▋| 93/96 [01:28<00:03,  1.23s/it]Loading dataset:  99%|█████████▉| 95/96 [01:28<00:00,  1.06it/s]Loading dataset: 100%|██████████| 96/96 [01:28<00:00,  1.42it/s]Loading dataset: 100%|██████████| 96/96 [01:28<00:00,  1.08it/s]root_dir /vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/
-
-
-training transforms:  (<monai.transforms.io.dictionary.LoadImaged object at 0x7fbef12c2d90>, <monai.transforms.utility.dictionary.AsChannelFirstd object at 0x7fbef12dd040>, <__main__.ConvertToMultiChannelBasedOnBratsClassesd object at 0x7fbef12dd100>, <monai.transforms.spatial.dictionary.Spacingd object at 0x7fbef12dd160>, <monai.transforms.spatial.dictionary.Orientationd object at 0x7fbf8bbd82b0>, <monai.transforms.croppad.dictionary.RandSpatialCropd object at 0x7fbef12b0f70>, <monai.transforms.spatial.dictionary.RandFlipd object at 0x7fbef12b0820>, <monai.transforms.intensity.dictionary.NormalizeIntensityd object at 0x7fbef12b0f10>, <monai.transforms.intensity.dictionary.RandScaleIntensityd object at 0x7fbef12b0d90>, <monai.transforms.intensity.dictionary.RandShiftIntensityd object at 0x7fbef12b0cd0>, <monai.transforms.utility.dictionary.ToTensord object at 0x7fbef12b0730>, <filters_and_operators.RandFourierDiskMaskd object at 0x7fbef12b06a0>) 
-
-validation transforms:  (<monai.transforms.io.dictionary.LoadImaged object at 0x7fbef12b0a60>, <monai.transforms.utility.dictionary.AsChannelFirstd object at 0x7fbef12dd220>, <__main__.ConvertToMultiChannelBasedOnBratsClassesd object at 0x7fbef12dd310>, <monai.transforms.spatial.dictionary.Spacingd object at 0x7fbef12dd370>, <monai.transforms.spatial.dictionary.Orientationd object at 0x7fbef12dd3d0>, <monai.transforms.croppad.dictionary.CenterSpatialCropd object at 0x7fbef12dd490>, <monai.transforms.intensity.dictionary.NormalizeIntensityd object at 0x7fbef12dd550>, <monai.transforms.utility.dictionary.ToTensord object at 0x7fbef12dd5e0>, <filters_and_operators.RandFourierDiskMaskd object at 0x7fbef12dd6a0>) 
-
-Data loaders created.
-
-Model instatitated with number of parameters =  4810074
-
- Training started... 
-
-----------
-epoch 1/3
-
-Traceback (most recent call last):
-  File "/homes/yc7620/Documents/medical-vision-textural-bias/10_scripts/20_Gibbs_filters/stylized_gibbs55_3_epochs.py", line 225, in <module>
-    for batch_data in train_loader:
-  File "/vol/bitbucket/yc7620/miniconda3/envs/torch1p8/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 517, in __next__
-    data = self._next_data()
-  File "/vol/bitbucket/yc7620/miniconda3/envs/torch1p8/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1182, in _next_data
-    idx, data = self._get_data()
-  File "/vol/bitbucket/yc7620/miniconda3/envs/torch1p8/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1148, in _get_data
-    success, data = self._try_get_data()
-  File "/vol/bitbucket/yc7620/miniconda3/envs/torch1p8/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 986, in _try_get_data
-    data = self._data_queue.get(timeout=timeout)
-  File "/vol/bitbucket/yc7620/miniconda3/envs/torch1p8/lib/python3.8/multiprocessing/queues.py", line 116, in get
-    return _ForkingPickler.loads(res)
-  File "/vol/bitbucket/yc7620/miniconda3/envs/torch1p8/lib/python3.8/site-packages/torch/multiprocessing/reductions.py", line 282, in rebuild_storage_fd
-    fd = df.detach()
-  File "/vol/bitbucket/yc7620/miniconda3/envs/torch1p8/lib/python3.8/multiprocessing/resource_sharer.py", line 58, in detach
-    return reduction.recv_handle(conn)
-  File "/vol/bitbucket/yc7620/miniconda3/envs/torch1p8/lib/python3.8/multiprocessing/reduction.py", line 189, in recv_handle
-    return recvfds(s, 1)[0]
-  File "/vol/bitbucket/yc7620/miniconda3/envs/torch1p8/lib/python3.8/multiprocessing/reduction.py", line 164, in recvfds
-    raise RuntimeError('received %d items of ancdata' %
-RuntimeError: received 0 items of ancdata

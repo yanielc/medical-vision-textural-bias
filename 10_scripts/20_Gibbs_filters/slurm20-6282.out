@@ -1,659 +1,0 @@
-Wed Mar 31 13:10:15 2021       
-+-----------------------------------------------------------------------------+
-| NVIDIA-SMI 460.32.03    Driver Version: 460.32.03    CUDA Version: 11.2     |
-|-------------------------------+----------------------+----------------------+
-| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
-|                               |                      |               MIG M. |
-|===============================+======================+======================|
-|   0  Tesla T4            On   | 00000000:00:09.0 Off |                    0 |
-| N/A   41C    P8    10W /  70W |      0MiB / 15109MiB |      0%      Default |
-|                               |                      |                  N/A |
-+-------------------------------+----------------------+----------------------+
-|   1  Tesla T4            On   | 00000000:00:0F.0 Off |                    0 |
-| N/A   43C    P8    11W /  70W |      0MiB / 15109MiB |      0%      Default |
-|                               |                      |                  N/A |
-+-------------------------------+----------------------+----------------------+
-                                                                               
-+-----------------------------------------------------------------------------+
-| Processes:                                                                  |
-|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
-|        ID   ID                                                   Usage      |
-|=============================================================================|
-|  No running processes found                                                 |
-+-----------------------------------------------------------------------------+
-MONAI version: 0.5.dev2113
-Numpy version: 1.19.2
-Pytorch version: 1.8.0
-MONAI flags: HAS_EXT = False, USE_COMPILED = False
-MONAI rev id: b3cc668c924b2a7e6b822416f4d920a098c27704
-
-Optional dependencies:
-Pytorch Ignite version: 0.4.4
-Nibabel version: 3.2.1
-scikit-image version: 0.17.2
-Pillow version: 8.1.2
-Tensorboard version: 1.15.0
-gdown version: 3.12.2
-TorchVision version: 0.9.0
-ITK version: NOT INSTALLED or UNKNOWN VERSION.
-tqdm version: 4.50.2
-lmdb version: NOT INSTALLED or UNKNOWN VERSION.
-psutil version: NOT INSTALLED or UNKNOWN VERSION.
-
-For details about installing the optional dependencies, please visit:
-    https://docs.monai.io/en/latest/installation.html#installing-the-recommended-dependencies
-
-Loading dataset:   0%|          | 0/100 [00:00<?, ?it/s]Loading dataset:   1%|          | 1/100 [00:04<06:51,  4.16s/it]Loading dataset:   5%|▌         | 5/100 [00:07<05:03,  3.19s/it]Loading dataset:   9%|▉         | 9/100 [00:11<03:47,  2.50s/it]Loading dataset:  10%|█         | 10/100 [00:11<02:49,  1.88s/it]Loading dataset:  13%|█▎        | 13/100 [00:15<02:26,  1.68s/it]Loading dataset:  16%|█▌        | 16/100 [00:15<01:40,  1.19s/it]Loading dataset:  17%|█▋        | 17/100 [00:18<02:26,  1.77s/it]Loading dataset:  18%|█▊        | 18/100 [00:18<01:46,  1.30s/it]Loading dataset:  19%|█▉        | 19/100 [00:19<01:24,  1.05s/it]Loading dataset:  21%|██        | 21/100 [00:22<01:36,  1.22s/it]Loading dataset:  22%|██▏       | 22/100 [00:22<01:11,  1.09it/s]Loading dataset:  23%|██▎       | 23/100 [00:23<00:55,  1.39it/s]Loading dataset:  25%|██▌       | 25/100 [00:26<01:17,  1.03s/it]Loading dataset:  29%|██▉       | 29/100 [00:30<01:11,  1.00s/it]Loading dataset:  33%|███▎      | 33/100 [00:34<01:05,  1.02it/s]Loading dataset:  34%|███▍      | 34/100 [00:34<00:50,  1.30it/s]Loading dataset:  37%|███▋      | 37/100 [00:38<00:56,  1.12it/s]Loading dataset:  41%|████      | 41/100 [00:41<00:53,  1.11it/s]Loading dataset:  43%|████▎     | 43/100 [00:41<00:37,  1.53it/s]Loading dataset:  45%|████▌     | 45/100 [00:45<00:53,  1.02it/s]Loading dataset:  46%|████▌     | 46/100 [00:45<00:38,  1.39it/s]Loading dataset:  49%|████▉     | 49/100 [00:48<00:43,  1.18it/s]Loading dataset:  50%|█████     | 50/100 [00:49<00:32,  1.54it/s]Loading dataset:  51%|█████     | 51/100 [00:49<00:26,  1.88it/s]Loading dataset:  53%|█████▎    | 53/100 [00:52<00:39,  1.18it/s]Loading dataset:  54%|█████▍    | 54/100 [00:52<00:32,  1.43it/s]Loading dataset:  57%|█████▋    | 57/100 [00:56<00:36,  1.16it/s]Loading dataset:  60%|██████    | 60/100 [00:56<00:24,  1.63it/s]Loading dataset:  61%|██████    | 61/100 [01:00<00:57,  1.46s/it]Loading dataset:  63%|██████▎   | 63/100 [01:00<00:39,  1.06s/it]Loading dataset:  65%|██████▌   | 65/100 [01:03<00:44,  1.27s/it]Loading dataset:  66%|██████▌   | 66/100 [01:04<00:31,  1.07it/s]Loading dataset:  69%|██████▉   | 69/100 [01:07<00:30,  1.00it/s]Loading dataset:  71%|███████   | 71/100 [01:07<00:21,  1.35it/s]Loading dataset:  73%|███████▎  | 73/100 [01:11<00:28,  1.04s/it]Loading dataset:  75%|███████▌  | 75/100 [01:11<00:18,  1.34it/s]Loading dataset:  77%|███████▋  | 77/100 [01:14<00:23,  1.03s/it]Loading dataset:  80%|████████  | 80/100 [01:15<00:15,  1.32it/s]Loading dataset:  81%|████████  | 81/100 [01:18<00:27,  1.47s/it]Loading dataset:  82%|████████▏ | 82/100 [01:18<00:20,  1.15s/it]Loading dataset:  85%|████████▌ | 85/100 [01:21<00:17,  1.14s/it]Loading dataset:  87%|████████▋ | 87/100 [01:22<00:10,  1.19it/s]Loading dataset:  89%|████████▉ | 89/100 [01:25<00:11,  1.05s/it]Loading dataset:  90%|█████████ | 90/100 [01:25<00:08,  1.21it/s]Loading dataset:  92%|█████████▏| 92/100 [01:25<00:04,  1.67it/s]Loading dataset:  93%|█████████▎| 93/100 [01:28<00:09,  1.36s/it]Loading dataset:  94%|█████████▍| 94/100 [01:29<00:06,  1.04s/it]Loading dataset:  97%|█████████▋| 97/100 [01:32<00:03,  1.05s/it]Loading dataset:  98%|█████████▊| 98/100 [01:32<00:01,  1.21it/s]Loading dataset: 100%|██████████| 100/100 [01:32<00:00,  1.08it/s]
-Loading dataset:   0%|          | 0/50 [00:00<?, ?it/s]Loading dataset:   2%|▏         | 1/50 [00:03<03:00,  3.68s/it]Loading dataset:   6%|▌         | 3/50 [00:03<02:03,  2.62s/it]Loading dataset:  10%|█         | 5/50 [00:07<01:45,  2.35s/it]Loading dataset:  14%|█▍        | 7/50 [00:07<01:12,  1.69s/it]Loading dataset:  18%|█▊        | 9/50 [00:10<01:08,  1.68s/it]Loading dataset:  22%|██▏       | 11/50 [00:11<00:48,  1.24s/it]Loading dataset:  26%|██▌       | 13/50 [00:14<00:50,  1.36s/it]Loading dataset:  30%|███       | 15/50 [00:14<00:34,  1.02it/s]Loading dataset:  34%|███▍      | 17/50 [00:18<00:39,  1.18s/it]Loading dataset:  36%|███▌      | 18/50 [00:18<00:28,  1.11it/s]Loading dataset:  40%|████      | 20/50 [00:18<00:20,  1.48it/s]Loading dataset:  42%|████▏     | 21/50 [00:22<00:42,  1.45s/it]Loading dataset:  44%|████▍     | 22/50 [00:22<00:30,  1.08s/it]Loading dataset:  46%|████▌     | 23/50 [00:22<00:22,  1.21it/s]Loading dataset:  50%|█████     | 25/50 [00:25<00:26,  1.05s/it]Loading dataset:  52%|█████▏    | 26/50 [00:26<00:21,  1.12it/s]Loading dataset:  58%|█████▊    | 29/50 [00:29<00:19,  1.08it/s]Loading dataset:  60%|██████    | 30/50 [00:29<00:14,  1.37it/s]Loading dataset:  62%|██████▏   | 31/50 [00:29<00:10,  1.76it/s]Loading dataset:  66%|██████▌   | 33/50 [00:32<00:15,  1.11it/s]Loading dataset:  70%|███████   | 35/50 [00:33<00:10,  1.48it/s]Loading dataset:  72%|███████▏  | 36/50 [00:33<00:07,  1.95it/s]Loading dataset:  74%|███████▍  | 37/50 [00:36<00:18,  1.43s/it]Loading dataset:  82%|████████▏ | 41/50 [00:40<00:11,  1.25s/it]Loading dataset:  90%|█████████ | 45/50 [00:44<00:05,  1.18s/it]Loading dataset:  98%|█████████▊| 49/50 [00:46<00:01,  1.00s/it]Loading dataset: 100%|██████████| 50/50 [00:46<00:00,  1.07it/s]root_dir /vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/
-
-
-training transforms:  (<monai.transforms.io.dictionary.LoadImaged object at 0x7f562110ae50>, <monai.transforms.utility.dictionary.AsChannelFirstd object at 0x7f56210a81c0>, <__main__.ConvertToMultiChannelBasedOnBratsClassesd object at 0x7f56210a8280>, <monai.transforms.spatial.dictionary.Spacingd object at 0x7f56210a82e0>, <monai.transforms.spatial.dictionary.Orientationd object at 0x7f56b7a21370>, <monai.transforms.croppad.dictionary.RandSpatialCropd object at 0x7f562110a130>, <monai.transforms.spatial.dictionary.RandFlipd object at 0x7f562110a0d0>, <monai.transforms.intensity.dictionary.NormalizeIntensityd object at 0x7f56210ec9a0>, <monai.transforms.intensity.dictionary.RandScaleIntensityd object at 0x7f56210ecf10>, <monai.transforms.intensity.dictionary.RandShiftIntensityd object at 0x7f56210ece50>, <monai.transforms.utility.dictionary.ToTensord object at 0x7f56210ec8b0>, <filters_and_operators.RandFourierDiskMaskd object at 0x7f56210ec820>) 
-
-validation transforms:  (<monai.transforms.io.dictionary.LoadImaged object at 0x7f56210ecbe0>, <monai.transforms.utility.dictionary.AsChannelFirstd object at 0x7f56210a83a0>, <__main__.ConvertToMultiChannelBasedOnBratsClassesd object at 0x7f56210a8490>, <monai.transforms.spatial.dictionary.Spacingd object at 0x7f56210a84f0>, <monai.transforms.spatial.dictionary.Orientationd object at 0x7f56210a8550>, <monai.transforms.croppad.dictionary.CenterSpatialCropd object at 0x7f56210a8610>, <monai.transforms.intensity.dictionary.NormalizeIntensityd object at 0x7f56210a86d0>, <monai.transforms.utility.dictionary.ToTensord object at 0x7f56210a8760>, <filters_and_operators.RandFourierDiskMaskd object at 0x7f56210a8820>) 
-
-Data loaders created.
-
-
-dict_keys(['image', 'label', 'image_meta_dict', 'label_meta_dict', 'image_transforms', 'label_transforms'])
-torch.Size([2, 4, 128, 128, 64])
-Model instatitated with number of parameters =  4810074
-
- Training started... 
-
-----------
-epoch 1/3
-1/194, train_loss: 0.9712
-2/194, train_loss: 0.9694
-3/194, train_loss: 0.9395
-4/194, train_loss: 0.9521
-5/194, train_loss: 0.9456
-6/194, train_loss: 0.9328
-7/194, train_loss: 0.9446
-8/194, train_loss: 0.9474
-9/194, train_loss: 0.8984
-10/194, train_loss: 0.9318
-11/194, train_loss: 0.9416
-12/194, train_loss: 0.9225
-13/194, train_loss: 0.9301
-14/194, train_loss: 0.9797
-15/194, train_loss: 0.9504
-16/194, train_loss: 0.9404
-17/194, train_loss: 0.9423
-18/194, train_loss: 0.9310
-19/194, train_loss: 0.8907
-20/194, train_loss: 0.9569
-21/194, train_loss: 0.9614
-22/194, train_loss: 0.9574
-23/194, train_loss: 0.9584
-24/194, train_loss: 0.9629
-25/194, train_loss: 0.9536
-26/194, train_loss: 0.9779
-27/194, train_loss: 0.9289
-28/194, train_loss: 0.9146
-29/194, train_loss: 0.9353
-30/194, train_loss: 0.9687
-31/194, train_loss: 0.9017
-32/194, train_loss: 0.9630
-33/194, train_loss: 0.9375
-34/194, train_loss: 0.9894
-35/194, train_loss: 0.9462
-36/194, train_loss: 0.9062
-37/194, train_loss: 0.9051
-38/194, train_loss: 0.9597
-39/194, train_loss: 0.9511
-40/194, train_loss: 0.9522
-41/194, train_loss: 0.8955
-42/194, train_loss: 0.9502
-43/194, train_loss: 0.9839
-44/194, train_loss: 0.9693
-45/194, train_loss: 0.9134
-46/194, train_loss: 0.9310
-47/194, train_loss: 0.9121
-48/194, train_loss: 0.9454
-49/194, train_loss: 0.9022
-50/194, train_loss: 0.9133
-51/194, train_loss: 0.9166
-52/194, train_loss: 0.9465
-53/194, train_loss: 0.9315
-54/194, train_loss: 0.9123
-55/194, train_loss: 0.9307
-56/194, train_loss: 0.9550
-57/194, train_loss: 0.9471
-58/194, train_loss: 0.9301
-59/194, train_loss: 0.9783
-60/194, train_loss: 0.9110
-61/194, train_loss: 0.8805
-62/194, train_loss: 0.9050
-63/194, train_loss: 0.9710
-64/194, train_loss: 0.8820
-65/194, train_loss: 0.9392
-66/194, train_loss: 0.9311
-67/194, train_loss: 0.9263
-68/194, train_loss: 0.9243
-69/194, train_loss: 0.8948
-70/194, train_loss: 0.9218
-71/194, train_loss: 0.9832
-72/194, train_loss: 0.9117
-73/194, train_loss: 0.8937
-74/194, train_loss: 0.9571
-75/194, train_loss: 0.9202
-76/194, train_loss: 0.9513
-77/194, train_loss: 0.9373
-78/194, train_loss: 0.9282
-79/194, train_loss: 0.9212
-80/194, train_loss: 0.9418
-81/194, train_loss: 0.9828
-82/194, train_loss: 0.9660
-83/194, train_loss: 0.9591
-84/194, train_loss: 0.9608
-85/194, train_loss: 0.9151
-86/194, train_loss: 0.9468
-87/194, train_loss: 0.9143
-88/194, train_loss: 0.9736
-89/194, train_loss: 0.9440
-90/194, train_loss: 0.9461
-91/194, train_loss: 0.9441
-92/194, train_loss: 0.9437
-93/194, train_loss: 0.8988
-94/194, train_loss: 0.8941
-95/194, train_loss: 0.9434
-96/194, train_loss: 0.9420
-97/194, train_loss: 0.8589
-98/194, train_loss: 0.9322
-99/194, train_loss: 0.8965
-100/194, train_loss: 0.9207
-101/194, train_loss: 0.9511
-102/194, train_loss: 0.8691
-103/194, train_loss: 0.9010
-104/194, train_loss: 0.9372
-105/194, train_loss: 0.9423
-106/194, train_loss: 0.9627
-107/194, train_loss: 0.9523
-108/194, train_loss: 0.9192
-109/194, train_loss: 0.9640
-110/194, train_loss: 0.9040
-111/194, train_loss: 0.8864
-112/194, train_loss: 0.9423
-113/194, train_loss: 0.8764
-114/194, train_loss: 0.9534
-115/194, train_loss: 0.9559
-116/194, train_loss: 0.9219
-117/194, train_loss: 0.8785
-118/194, train_loss: 0.9273
-119/194, train_loss: 0.9038
-120/194, train_loss: 0.9392
-121/194, train_loss: 0.9101
-122/194, train_loss: 0.9349
-123/194, train_loss: 0.9229
-124/194, train_loss: 0.9457
-125/194, train_loss: 0.9288
-126/194, train_loss: 0.8616
-127/194, train_loss: 0.8468
-128/194, train_loss: 0.9703
-129/194, train_loss: 0.9087
-130/194, train_loss: 0.9413
-131/194, train_loss: 0.9023
-132/194, train_loss: 0.9639
-133/194, train_loss: 0.8839
-134/194, train_loss: 0.9648
-135/194, train_loss: 0.9522
-136/194, train_loss: 0.9294
-137/194, train_loss: 0.8962
-138/194, train_loss: 0.9628
-139/194, train_loss: 0.9235
-140/194, train_loss: 0.8907
-141/194, train_loss: 0.9219
-142/194, train_loss: 0.9205
-143/194, train_loss: 0.9708
-144/194, train_loss: 0.9574
-145/194, train_loss: 0.9092
-146/194, train_loss: 0.9451
-147/194, train_loss: 0.9001
-148/194, train_loss: 0.9826
-149/194, train_loss: 0.9013
-150/194, train_loss: 0.8907
-151/194, train_loss: 0.9313
-152/194, train_loss: 0.9330
-153/194, train_loss: 0.9581
-154/194, train_loss: 0.8676
-155/194, train_loss: 0.8684
-156/194, train_loss: 0.8803
-157/194, train_loss: 0.9355
-158/194, train_loss: 0.9256
-159/194, train_loss: 0.9334
-160/194, train_loss: 0.8776
-161/194, train_loss: 0.9578
-162/194, train_loss: 0.9565
-163/194, train_loss: 0.9168
-164/194, train_loss: 0.9669
-165/194, train_loss: 0.8998
-166/194, train_loss: 0.9450
-167/194, train_loss: 0.9138
-168/194, train_loss: 0.9399
-169/194, train_loss: 0.8963
-170/194, train_loss: 0.8808
-171/194, train_loss: 0.9438
-172/194, train_loss: 0.8917
-173/194, train_loss: 0.8746
-174/194, train_loss: 0.9337
-175/194, train_loss: 0.9475
-176/194, train_loss: 0.9340
-177/194, train_loss: 0.8412
-178/194, train_loss: 0.9833
-179/194, train_loss: 0.8842
-180/194, train_loss: 0.9063
-181/194, train_loss: 0.8581
-182/194, train_loss: 0.9083
-183/194, train_loss: 0.9522
-184/194, train_loss: 0.8837
-185/194, train_loss: 0.9452
-186/194, train_loss: 0.9159
-187/194, train_loss: 0.9011
-188/194, train_loss: 0.9207
-189/194, train_loss: 0.9434
-190/194, train_loss: 0.9327
-191/194, train_loss: 0.8894
-192/194, train_loss: 0.9746
-193/194, train_loss: 0.9486
-194/194, train_loss: 0.9036
-epoch 1 average loss: 0.9292
-----------
-epoch 2/3
-1/194, train_loss: 0.8976
-2/194, train_loss: 0.9203
-3/194, train_loss: 0.9136
-4/194, train_loss: 0.8911
-5/194, train_loss: 0.9134
-6/194, train_loss: 0.9511
-7/194, train_loss: 0.9602
-8/194, train_loss: 0.9096
-9/194, train_loss: 0.9366
-10/194, train_loss: 0.9886
-11/194, train_loss: 0.9140
-12/194, train_loss: 0.8497
-13/194, train_loss: 0.9066
-14/194, train_loss: 0.9201
-15/194, train_loss: 0.9043
-16/194, train_loss: 0.9215
-17/194, train_loss: 0.9008
-18/194, train_loss: 0.9751
-19/194, train_loss: 0.8831
-20/194, train_loss: 0.8648
-21/194, train_loss: 0.9490
-22/194, train_loss: 0.9580
-23/194, train_loss: 0.8743
-24/194, train_loss: 0.8976
-25/194, train_loss: 0.8698
-26/194, train_loss: 0.8913
-27/194, train_loss: 0.9142
-28/194, train_loss: 0.8711
-29/194, train_loss: 0.9179
-30/194, train_loss: 0.8996
-31/194, train_loss: 0.9415
-32/194, train_loss: 0.9559
-33/194, train_loss: 0.9143
-34/194, train_loss: 0.8762
-35/194, train_loss: 0.9246
-36/194, train_loss: 0.9392
-37/194, train_loss: 0.8859
-38/194, train_loss: 0.9520
-39/194, train_loss: 0.9443
-40/194, train_loss: 0.9336
-41/194, train_loss: 0.8864
-42/194, train_loss: 0.9362
-43/194, train_loss: 0.8915
-44/194, train_loss: 0.9038
-45/194, train_loss: 0.9165
-46/194, train_loss: 0.9050
-47/194, train_loss: 0.8738
-48/194, train_loss: 0.9592
-49/194, train_loss: 0.8469
-50/194, train_loss: 0.8909
-51/194, train_loss: 0.9281
-52/194, train_loss: 0.9400
-53/194, train_loss: 0.9466
-54/194, train_loss: 0.9283
-55/194, train_loss: 0.9163
-56/194, train_loss: 0.8880
-57/194, train_loss: 0.9546
-58/194, train_loss: 0.8769
-59/194, train_loss: 0.8937
-60/194, train_loss: 0.9487
-61/194, train_loss: 0.8020
-62/194, train_loss: 0.8067
-63/194, train_loss: 0.9024
-64/194, train_loss: 0.9510
-65/194, train_loss: 0.9224
-66/194, train_loss: 0.8997
-67/194, train_loss: 0.8896
-68/194, train_loss: 0.9290
-69/194, train_loss: 0.8713
-70/194, train_loss: 0.8624
-71/194, train_loss: 0.8881
-72/194, train_loss: 0.9415
-73/194, train_loss: 0.8689
-74/194, train_loss: 0.9286
-75/194, train_loss: 0.8929
-76/194, train_loss: 0.9302
-77/194, train_loss: 0.9052
-78/194, train_loss: 0.8942
-79/194, train_loss: 0.8690
-80/194, train_loss: 0.9506
-81/194, train_loss: 0.8825
-82/194, train_loss: 0.9295
-83/194, train_loss: 0.9587
-84/194, train_loss: 0.8448
-85/194, train_loss: 0.8464
-86/194, train_loss: 0.9087
-87/194, train_loss: 0.9319
-88/194, train_loss: 0.8253
-89/194, train_loss: 0.9334
-90/194, train_loss: 0.9217
-91/194, train_loss: 0.8908
-92/194, train_loss: 0.8532
-93/194, train_loss: 0.8370
-94/194, train_loss: 0.8948
-95/194, train_loss: 0.8749
-96/194, train_loss: 0.9353
-97/194, train_loss: 0.9117
-98/194, train_loss: 0.9209
-99/194, train_loss: 0.8996
-100/194, train_loss: 0.8875
-101/194, train_loss: 0.9760
-102/194, train_loss: 0.8970
-103/194, train_loss: 0.8900
-104/194, train_loss: 0.9101
-105/194, train_loss: 0.9335
-106/194, train_loss: 0.9076
-107/194, train_loss: 0.8525
-108/194, train_loss: 0.8946
-109/194, train_loss: 0.9231
-110/194, train_loss: 0.9095
-111/194, train_loss: 0.9198
-112/194, train_loss: 0.8673
-113/194, train_loss: 0.9154
-114/194, train_loss: 0.9347
-115/194, train_loss: 0.8973
-116/194, train_loss: 0.9319
-117/194, train_loss: 0.8479
-118/194, train_loss: 0.9184
-119/194, train_loss: 0.9068
-120/194, train_loss: 0.8235
-121/194, train_loss: 0.9049
-122/194, train_loss: 0.8910
-123/194, train_loss: 0.9500
-124/194, train_loss: 0.9860
-125/194, train_loss: 0.9725
-126/194, train_loss: 0.8861
-127/194, train_loss: 0.8725
-128/194, train_loss: 0.9311
-129/194, train_loss: 0.9105
-130/194, train_loss: 0.9035
-131/194, train_loss: 0.8815
-132/194, train_loss: 0.8633
-133/194, train_loss: 0.9238
-134/194, train_loss: 0.8974
-135/194, train_loss: 0.9147
-136/194, train_loss: 0.8534
-137/194, train_loss: 0.9335
-138/194, train_loss: 0.9073
-139/194, train_loss: 0.8800
-140/194, train_loss: 0.9124
-141/194, train_loss: 0.9419
-142/194, train_loss: 0.9513
-143/194, train_loss: 0.9588
-144/194, train_loss: 0.8889
-145/194, train_loss: 0.9210
-146/194, train_loss: 0.8750
-147/194, train_loss: 0.8934
-148/194, train_loss: 0.9537
-149/194, train_loss: 0.8645
-150/194, train_loss: 0.8823
-151/194, train_loss: 0.9292
-152/194, train_loss: 0.8722
-153/194, train_loss: 0.8256
-154/194, train_loss: 0.8786
-155/194, train_loss: 0.7779
-156/194, train_loss: 0.8904
-157/194, train_loss: 0.9635
-158/194, train_loss: 0.9618
-159/194, train_loss: 0.8843
-160/194, train_loss: 0.8502
-161/194, train_loss: 0.9371
-162/194, train_loss: 0.9002
-163/194, train_loss: 0.8889
-164/194, train_loss: 0.8799
-165/194, train_loss: 0.8530
-166/194, train_loss: 0.9810
-167/194, train_loss: 0.8887
-168/194, train_loss: 0.8808
-169/194, train_loss: 0.8559
-170/194, train_loss: 0.8821
-171/194, train_loss: 0.8830
-172/194, train_loss: 0.8830
-173/194, train_loss: 0.8255
-174/194, train_loss: 0.9703
-175/194, train_loss: 0.9357
-176/194, train_loss: 0.8760
-177/194, train_loss: 0.9225
-178/194, train_loss: 0.8791
-179/194, train_loss: 0.8769
-180/194, train_loss: 0.8803
-181/194, train_loss: 0.7785
-182/194, train_loss: 0.9205
-183/194, train_loss: 0.8566
-184/194, train_loss: 0.9540
-185/194, train_loss: 0.8308
-186/194, train_loss: 0.8919
-187/194, train_loss: 0.9452
-188/194, train_loss: 0.9154
-189/194, train_loss: 0.8073
-190/194, train_loss: 0.8629
-191/194, train_loss: 0.9599
-192/194, train_loss: 0.8752
-193/194, train_loss: 0.9099
-194/194, train_loss: 0.8849
-epoch 2 average loss: 0.9027
-saved new best metric model
-current epoch: 2 current mean dice: 0.2357 tc: 0.2155 wt: 0.4701 et: 0.0215
-best mean dice: 0.2357 at epoch: 2
-----------
-epoch 3/3
-1/194, train_loss: 0.9884
-2/194, train_loss: 0.9010
-3/194, train_loss: 0.7766
-4/194, train_loss: 0.8738
-5/194, train_loss: 0.9308
-6/194, train_loss: 0.8587
-7/194, train_loss: 0.9656
-8/194, train_loss: 0.9002
-9/194, train_loss: 0.8768
-10/194, train_loss: 0.8081
-11/194, train_loss: 0.8344
-12/194, train_loss: 0.8978
-13/194, train_loss: 0.9661
-14/194, train_loss: 0.9139
-15/194, train_loss: 0.9048
-16/194, train_loss: 0.8901
-17/194, train_loss: 0.8613
-18/194, train_loss: 0.9070
-19/194, train_loss: 0.9671
-20/194, train_loss: 0.8913
-21/194, train_loss: 0.9159
-22/194, train_loss: 0.9128
-23/194, train_loss: 0.8815
-24/194, train_loss: 0.9236
-25/194, train_loss: 0.9121
-26/194, train_loss: 0.8669
-27/194, train_loss: 0.9012
-28/194, train_loss: 0.8994
-29/194, train_loss: 0.8292
-30/194, train_loss: 0.8325
-31/194, train_loss: 0.9397
-32/194, train_loss: 0.9272
-33/194, train_loss: 0.8409
-34/194, train_loss: 0.9122
-35/194, train_loss: 0.8940
-36/194, train_loss: 0.8314
-37/194, train_loss: 0.7970
-38/194, train_loss: 0.9075
-39/194, train_loss: 0.8842
-40/194, train_loss: 0.9513
-41/194, train_loss: 0.9006
-42/194, train_loss: 0.9613
-43/194, train_loss: 0.8186
-44/194, train_loss: 0.9238
-45/194, train_loss: 0.8289
-46/194, train_loss: 0.8590
-47/194, train_loss: 0.8230
-48/194, train_loss: 0.8139
-49/194, train_loss: 0.8198
-50/194, train_loss: 0.9314
-51/194, train_loss: 0.8596
-52/194, train_loss: 0.8438
-53/194, train_loss: 0.8809
-54/194, train_loss: 0.8768
-55/194, train_loss: 0.8806
-56/194, train_loss: 0.9393
-57/194, train_loss: 0.9218
-58/194, train_loss: 0.9259
-59/194, train_loss: 0.8101
-60/194, train_loss: 0.8585
-61/194, train_loss: 0.9164
-62/194, train_loss: 0.9021
-63/194, train_loss: 0.8118
-64/194, train_loss: 0.8355
-65/194, train_loss: 0.8928
-66/194, train_loss: 0.8562
-67/194, train_loss: 0.8342
-68/194, train_loss: 0.8303
-69/194, train_loss: 0.9075
-70/194, train_loss: 0.9503
-71/194, train_loss: 0.9318
-72/194, train_loss: 0.8478
-73/194, train_loss: 0.8784
-74/194, train_loss: 0.9448
-75/194, train_loss: 0.9162
-76/194, train_loss: 0.8996
-77/194, train_loss: 0.8434
-78/194, train_loss: 0.8898
-79/194, train_loss: 0.8729
-80/194, train_loss: 0.9194
-81/194, train_loss: 0.8499
-82/194, train_loss: 0.8689
-83/194, train_loss: 0.8558
-84/194, train_loss: 0.8364
-85/194, train_loss: 0.8962
-86/194, train_loss: 0.9376
-87/194, train_loss: 0.9294
-88/194, train_loss: 0.8621
-89/194, train_loss: 0.8964
-90/194, train_loss: 0.7965
-91/194, train_loss: 0.8883
-92/194, train_loss: 0.8768
-93/194, train_loss: 0.8542
-94/194, train_loss: 0.9015
-95/194, train_loss: 0.8396
-96/194, train_loss: 0.7936
-97/194, train_loss: 0.8741
-98/194, train_loss: 0.8778
-99/194, train_loss: 0.8497
-100/194, train_loss: 0.9020
-101/194, train_loss: 0.9030
-102/194, train_loss: 0.8123
-103/194, train_loss: 0.9394
-104/194, train_loss: 0.9236
-105/194, train_loss: 0.8800
-106/194, train_loss: 0.8681
-107/194, train_loss: 0.9046
-108/194, train_loss: 0.8876
-109/194, train_loss: 0.7804
-110/194, train_loss: 0.8311
-111/194, train_loss: 0.8988
-112/194, train_loss: 0.8413
-113/194, train_loss: 0.8422
-114/194, train_loss: 0.9197
-115/194, train_loss: 0.9130
-116/194, train_loss: 0.9597
-117/194, train_loss: 0.8215
-118/194, train_loss: 0.9459
-119/194, train_loss: 0.8757
-120/194, train_loss: 0.8582
-121/194, train_loss: 0.7675
-122/194, train_loss: 0.8671
-123/194, train_loss: 0.8888
-124/194, train_loss: 0.8539
-125/194, train_loss: 0.8239
-126/194, train_loss: 0.9305
-127/194, train_loss: 0.7830
-128/194, train_loss: 0.7904
-129/194, train_loss: 0.8662
-130/194, train_loss: 0.8040
-131/194, train_loss: 0.8695
-132/194, train_loss: 0.8194
-133/194, train_loss: 0.8963
-134/194, train_loss: 0.8432
-135/194, train_loss: 0.8146
-136/194, train_loss: 0.8821
-137/194, train_loss: 0.8589
-138/194, train_loss: 0.8189
-139/194, train_loss: 0.9531
-140/194, train_loss: 0.8704
-141/194, train_loss: 0.7812
-142/194, train_loss: 0.9272
-143/194, train_loss: 0.8529
-144/194, train_loss: 0.8303
-145/194, train_loss: 0.7891
-146/194, train_loss: 0.8727
-147/194, train_loss: 0.8712
-148/194, train_loss: 0.8301
-149/194, train_loss: 0.9054
-150/194, train_loss: 0.8259
-151/194, train_loss: 0.8583
-152/194, train_loss: 0.9277
-153/194, train_loss: 0.9258
-154/194, train_loss: 0.7434
-155/194, train_loss: 0.8708
-156/194, train_loss: 0.9101
-157/194, train_loss: 0.8772
-158/194, train_loss: 0.8907
-159/194, train_loss: 0.9061
-160/194, train_loss: 0.9043
-161/194, train_loss: 0.8576
-162/194, train_loss: 0.8626
-163/194, train_loss: 0.8453
-164/194, train_loss: 0.8593
-165/194, train_loss: 0.8781
-166/194, train_loss: 0.8810
-167/194, train_loss: 0.8017
-168/194, train_loss: 0.9456
-169/194, train_loss: 0.8419
-170/194, train_loss: 0.8861
-171/194, train_loss: 0.8033
-172/194, train_loss: 0.9048
-173/194, train_loss: 0.9148
-174/194, train_loss: 0.9567
-175/194, train_loss: 0.8829
-176/194, train_loss: 0.9100
-177/194, train_loss: 0.9048
-178/194, train_loss: 0.8788
-179/194, train_loss: 0.7861
-180/194, train_loss: 0.8577
-181/194, train_loss: 0.8602
-182/194, train_loss: 0.8574
-183/194, train_loss: 0.7740
-184/194, train_loss: 0.8081
-185/194, train_loss: 0.8026
-186/194, train_loss: 0.8524
-187/194, train_loss: 0.8258
-188/194, train_loss: 0.8266
-189/194, train_loss: 0.9234
-190/194, train_loss: 0.8749
-191/194, train_loss: 0.8655
-192/194, train_loss: 0.8241
-193/194, train_loss: 0.8223
-194/194, train_loss: 0.8443
-epoch 3 average loss: 0.8729
-train completed, best_metric: 0.2357 at epoch: 2
-Plotting learning curves

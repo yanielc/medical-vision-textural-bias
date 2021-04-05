@@ -1,48 +1,0 @@
-Wed Mar 31 10:45:53 2021       
-+-----------------------------------------------------------------------------+
-| NVIDIA-SMI 460.32.03    Driver Version: 460.32.03    CUDA Version: 11.2     |
-|-------------------------------+----------------------+----------------------+
-| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
-|                               |                      |               MIG M. |
-|===============================+======================+======================|
-|   0  Tesla T4            On   | 00000000:00:0C.0 Off |                    0 |
-| N/A   42C    P8    10W /  70W |      0MiB / 15109MiB |      0%      Default |
-|                               |                      |                  N/A |
-+-------------------------------+----------------------+----------------------+
-                                                                               
-+-----------------------------------------------------------------------------+
-| Processes:                                                                  |
-|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
-|        ID   ID                                                   Usage      |
-|=============================================================================|
-|  No running processes found                                                 |
-+-----------------------------------------------------------------------------+
-MONAI version: 0.5.dev2113
-Numpy version: 1.19.2
-Pytorch version: 1.8.0
-MONAI flags: HAS_EXT = False, USE_COMPILED = False
-MONAI rev id: b3cc668c924b2a7e6b822416f4d920a098c27704
-
-Optional dependencies:
-Pytorch Ignite version: 0.4.4
-Nibabel version: 3.2.1
-scikit-image version: 0.17.2
-Pillow version: 8.1.2
-Tensorboard version: 1.15.0
-gdown version: 3.12.2
-TorchVision version: 0.9.0
-ITK version: NOT INSTALLED or UNKNOWN VERSION.
-tqdm version: 4.50.2
-lmdb version: NOT INSTALLED or UNKNOWN VERSION.
-psutil version: NOT INSTALLED or UNKNOWN VERSION.
-
-For details about installing the optional dependencies, please visit:
-    https://docs.monai.io/en/latest/installation.html#installing-the-recommended-dependencies
-
-Loading dataset:   0%|          | 0/50 [00:00<?, ?it/s]Loading dataset:   2%|▏         | 1/50 [00:04<03:50,  4.71s/it]Loading dataset:   4%|▍         | 2/50 [00:04<02:41,  3.36s/it]Loading dataset:  10%|█         | 5/50 [00:08<02:03,  2.74s/it]Loading dataset:  18%|█▊        | 9/50 [00:12<01:28,  2.16s/it]Loading dataset:  26%|██▌       | 13/50 [00:15<01:06,  1.80s/it]Loading dataset:  34%|███▍      | 17/50 [00:19<00:50,  1.54s/it]Loading dataset:  38%|███▊      | 19/50 [00:19<00:34,  1.11s/it]Loading dataset:  42%|████▏     | 21/50 [00:22<00:36,  1.25s/it]Loading dataset:  44%|████▍     | 22/50 [00:23<00:26,  1.05it/s]Loading dataset:  50%|█████     | 25/50 [00:27<00:26,  1.05s/it]Loading dataset:  58%|█████▊    | 29/50 [00:30<00:20,  1.04it/s]Loading dataset:  60%|██████    | 30/50 [00:30<00:14,  1.37it/s]Loading dataset:  64%|██████▍   | 32/50 [00:30<00:09,  1.82it/s]Loading dataset:  66%|██████▌   | 33/50 [00:33<00:23,  1.36s/it]Loading dataset:  70%|███████   | 35/50 [00:34<00:14,  1.02it/s]Loading dataset:  74%|███████▍  | 37/50 [00:37<00:15,  1.20s/it]Loading dataset:  76%|███████▌  | 38/50 [00:37<00:10,  1.09it/s]Loading dataset:  82%|████████▏ | 41/50 [00:41<00:08,  1.03it/s]Loading dataset:  90%|█████████ | 45/50 [00:44<00:04,  1.06it/s]Loading dataset:  92%|█████████▏| 46/50 [00:44<00:02,  1.34it/s]Loading dataset:  98%|█████████▊| 49/50 [00:47<00:00,  1.32it/s]Loading dataset: 100%|██████████| 50/50 [00:47<00:00,  1.06it/s]
-root_dir /vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/
-Traceback (most recent call last):
-  File "/homes/yc7620/Documents/medical-vision-textural-bias/10_scripts/20_Gibbs_filters/stylized_gibbs55_3_epochs.py", line 167, in <module>
-    transform=val_transform,
-NameError: name 'val_transform' is not defined
