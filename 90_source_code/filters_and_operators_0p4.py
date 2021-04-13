@@ -167,7 +167,7 @@ class disk_mask():
 
     '''
 
-    def __init__(self, k_tensor:torch.tensor, r: float = 2, 
+    def __init__(self, k_tensor:torch.tensor, r:  float = 2, 
                  dim:int=2, inside_off=True):
 
         '''
@@ -277,7 +277,8 @@ class RandFourierDiskMaskd(RandomizableTransform,MapTransform):
         '''
         keys = 'image', 'label', or ['image', 'label'] depending on which data
                 you need to transform
-        r = radius defining disk mask in the fourier space.
+        r = radius defining disk mask in the fourier space. If a list [a,b]
+            is given, the radius will be sampled from [a,b).
         inside_off = True to turn off the disk of radius r; False to turn off 
                 the complement.
         prob = probability of applying the transform.
