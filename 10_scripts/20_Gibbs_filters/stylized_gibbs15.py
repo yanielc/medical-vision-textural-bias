@@ -1,4 +1,10 @@
-
+################################################################
+# bit to help with torch/monai bug reported at                 #                        
+# https://github.com/Project-MONAI/MONAI/issues/701            #
+import resource                                                #
+rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)            #
+resource.setrlimit(resource.RLIMIT_NOFILE, (4096, rlimit[1]))  #
+################################################################
 
 import os
 import shutil
@@ -45,7 +51,7 @@ from typing import Union, List, Tuple
 
 # Local imports
 
-SOURCE_CODE_PATH = '../90_source_code/'
+SOURCE_CODE_PATH = '/homes/yc7620/Documents/medical-vision-textural-bias/90_source_code/'
 
 import sys
 sys.path.append(SOURCE_CODE_PATH)
@@ -59,14 +65,14 @@ set_determinism(seed=0)
 
 print_config()
 
-root_dir = '/content/drive/MyDrive/51_MONAI/'
-print('roo_dir', root_dir)
+root_dir = '/vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/'
+print('root_dir', root_dir)
 #############################################################################
 
 # Preprocessing transforms. Note we use the RandFourierDiskMaskd with r=55
 
 
-MASK_RADIUS = 55
+MASK_RADIUS = 15
 
 # Define a new transform to convert brain tumor labels.
 # Here we convert the multi-classes labels into multi-labels segmentation 
@@ -150,7 +156,6 @@ print('validation transforms: ', val_transform.transforms, '\n')
 
 # Dataloading
 
-#TODO: change cache_num -> 100 for training, remove for val_ds
 
 train_ds = DecathlonDataset(
     root_dir=root_dir,
@@ -159,7 +164,7 @@ train_ds = DecathlonDataset(
     section="training",
     download=False,
     num_workers=4,
-    cache_num=10,
+    cache_num=100
 )
 
 val_ds = DecathlonDataset(
@@ -169,7 +174,7 @@ val_ds = DecathlonDataset(
     section="validation",
     download=False,
     num_workers=4,
-    cache_num=10
+    cache_num=50
 )
 
 val_ds, test_ds = random_split(val_ds, [48, 48], torch.Generator().manual_seed(0))
@@ -205,8 +210,7 @@ print('Model instatitated with number of parameters = ',
 
 # Training loop
 
-# TODO change max_epochs to 180
-max_epochs = 2  # 180
+max_epochs = 180  # 180
 val_interval = 2
 best_metric = -1
 best_metric_epoch = -1
