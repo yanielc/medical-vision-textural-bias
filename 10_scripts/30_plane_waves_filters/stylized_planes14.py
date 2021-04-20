@@ -73,7 +73,7 @@ print('root_dir', root_dir)
 
 
 # set intensity
-INTENSITY = 12.
+INTENSITY = 14.
 # set sampling ellipsoid
 AA, BB, CC = 55.,55.,30.
 
