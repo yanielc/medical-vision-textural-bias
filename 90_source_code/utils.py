@@ -5,10 +5,36 @@ from torch.fft import (fftn, fft2,
                        fftshift, ifftshift, 
                        ifft2, ifftn)
 
+from monai.data import DataLoader
+from monai.networks.nets import UNet
+from monai.transforms import (
+    Activations,
+    AsChannelFirstd,
+    AsDiscrete,
+    CenterSpatialCropd,
+    Compose,
+    LoadImaged,
+    MapTransform,
+    NormalizeIntensityd,
+    Orientationd,
+    RandFlipd,
+    RandScaleIntensityd,
+    RandShiftIntensityd,
+    RandSpatialCropd,
+    Spacingd,
+    ToTensord,
+)
+from monai.utils import set_determinism
+from monai.metrics import DiceMetric
+
+from tqdm import tqdm
 import matplotlib.pyplot as plt
 
 from typing import Union, List, Tuple
+import pickle
 
+device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+root_dir = '/vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/'
 
 ############################################################
 
@@ -77,5 +103,152 @@ def show_slice_and_fourier(img_2d: torch.tensor, level: Union[int,float]=None,
     plt.show()
 
 
+##############################################################
 
-    ##############################################################
+from collections import defaultdict
+
+class model_evaluation:
+    '''Provides with regularly used tools to compare model
+    performance across various datasets.
+
+    Methods:
+
+    * _load_UNet: loads instance of UNet model
+
+    * dataset_eval: computes metrics on given dataset dataloader
+
+    * add_eval: keeps record of metrics for given dataset
+
+    '''
+
+    def __init__(self, model_name:str, instance_name:str):
+
+        '''
+        Args:
+            model_name = name of saved model.pth.
+            instance_name = label for the class instantation
+
+        '''
+
+        self.model_name = model_name
+        if model_name:
+            self.load_UNet(model_name)
+        else:
+            self.model = None
+        self.instance_name = instance_name
+        self.eval_dict = defaultdict(list)
+
+
+    def load_UNet(self,model_name:str):
+
+        '''Function to load model.
+        Args: model_name = name of saved model.pth
+
+        Returns: instance of UNet with imported weights'''
+        
+        self.model = UNet(dimensions=3, in_channels=4, out_channels=3,
+                     channels=(16, 32, 64, 128, 256),
+                     strides=(2, 2, 2, 2),
+                     num_res_units=2,).to(device)
+        self.model.load_state_dict(torch.load(root_dir+model_name))
+
+
+
+    def dataset_eval(self, test_loader:DataLoader):
+        ''' To evaluate model on given data using Dice metric
+        Args:
+            test_data: test data loader
+        Returns:
+            mean metrics
+        '''
+        if self.model is None:
+            raise RuntimeError(f'current model is {self.model}.\
+            Use {self.load_UNet.__name__} to load model.')
+
+        self.model.eval()
+        with torch.no_grad():
+            dice_metric = DiceMetric(include_background=True, reduction="mean")
+            post_trans = Compose([Activations(sigmoid=True),
+                                  AsDiscrete(threshold_values=True)])
+
+            metric_sum = 0.
+            metric_sum_tc = 0.
+            metric_sum_wt = 0.
+            metric_sum_et = 0.
+
+            metric_count = 0
+            metric_count_tc  = 0
+            metric_count_wt = 0
+            metric_count_et = 0
+
+            for test_data in tqdm(test_loader):
+                val_inputs, val_labels = (
+                    test_data["image"].to(device),
+                    test_data["label"].to(device),
+                )
+                val_outputs = self.model(val_inputs)
+                val_outputs = post_trans(val_outputs)
+                # compute overall mean dice
+                value, not_nans = dice_metric(y_pred=val_outputs, y=val_labels)
+                not_nans = not_nans.item()
+                metric_count += not_nans
+                metric_sum += value.item() * not_nans
+                # compute mean dice for TC
+                value_tc, not_nans = dice_metric(
+                    y_pred=val_outputs[:, 0:1], y=val_labels[:, 0:1]
+                )
+                not_nans = not_nans.item()
+                metric_count_tc += not_nans
+                metric_sum_tc += value_tc.item() * not_nans
+                # compute mean dice for WT
+                value_wt, not_nans = dice_metric(
+                    y_pred=val_outputs[:, 1:2], y=val_labels[:, 1:2]
+                )
+                not_nans = not_nans.item()
+                metric_count_wt += not_nans
+                metric_sum_wt += value_wt.item() * not_nans
+                # compute mean dice for ET
+                value_et, not_nans = dice_metric(
+                    y_pred=val_outputs[:, 2:3], y=val_labels[:, 2:3]
+                )
+                not_nans = not_nans.item()
+                metric_count_et += not_nans
+                metric_sum_et += value_et.item() * not_nans
+
+            metric = metric_sum / metric_count
+            metric_tc = metric_sum_tc / metric_count_tc
+            metric_wt = metric_sum_wt / metric_count_wt
+            metric_et = metric_sum_et / metric_count_et
+
+        return metric, metric_et, metric_tc, metric_wt
+
+    def add_eval(self, name:str, test_loader:DataLoader, data_dict:dict=None) -> None:
+        '''Method to add evaluation to the attribute
+        eval_dict.
+
+        Args:
+            name = string to label evaluation
+            test_loader = dataloader of data to test
+            data_dict = dictionary of type {name:test_loader}. If this argument is
+                        passed, the other arguments are ignored.
+        '''
+
+        if data_dict == None:
+            self.eval_dict[name] = self.dataset_eval(test_loader)
+        else:
+            for name in data_dict:
+                self.eval_dict[name] = self.dataset_eval(data_dict[name])
+
+    def save(self):
+        '''save a the state the dictionary in a pickle'''
+        with open(self.instance_name+'.pickle', 'wb') as f:
+            d = self.__dict__.copy()
+            d['model'] = None
+            pickle.dump(d, f)
+
+    def load_dict(self, filename:str):
+        '''load instance of class'''
+        with open(filename, 'rb') as f:
+            self.__dict__.update(pickle.load(f))
+        if self.model_name:
+            self.load_UNet(self.model_name)
