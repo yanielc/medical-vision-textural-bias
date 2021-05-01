@@ -121,11 +121,12 @@ class model_evaluation:
 
     '''
 
-    def __init__(self, model_name:str, instance_name:str):
+    def __init__(self, model_name:str=None, instance_name:str=None):
 
         '''
         Args:
-            model_name = name of saved model.pth.
+            model_name = name of saved model.pth. If given it will be
+                        loaded on instantiation.
             instance_name = label for the class instantation
 
         '''
@@ -248,7 +249,12 @@ class model_evaluation:
 
     def load_dict(self, filename:str):
         '''load instance of class'''
+
+        # use whether a model name was given at instantiation
+        # to decide whether the model should be loaded too.
+        original_model_name = self.model_name
+
         with open(filename, 'rb') as f:
             self.__dict__.update(pickle.load(f))
-        if self.model_name:
+        if original_model_name:
             self.load_UNet(self.model_name)
