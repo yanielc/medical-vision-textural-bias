@@ -13,6 +13,8 @@ from monai.transforms import MapTransform, RandomizableTransform, Randomizable
 from math import floor
 from typing import Union, List, Tuple
 
+import warnings
+
 
 ############################################################################
 
@@ -157,7 +159,8 @@ class RandFourierDiskMaskd(RandomizableTransform,MapTransform):
     FT of given data.'''
 
     def __init__(self, keys: Union[str, List['str']], r: Union[float, List[float]] = float('Inf'), 
-                 inside_off:bool=False, prob:float=0.5, allow_missing_keys=False) -> None:
+                 inside_off:bool=False, prob:float=0.5, 
+                 allow_missing_keys:bool = False) -> None:
 
         '''
         keys = 'image', 'label', or ['image', 'label'] depending on which data
@@ -357,3 +360,69 @@ class RandPlaneWaves_ellipsoid(RandomizableTransform, MapTransform):
                      dim=(-3,-2,-1), norm='backward').real
         
 
+##############################################################################
+
+class SaltAndPepper(MapTransform, RandomizableTransform):
+    """
+    Transform to apply salt and pepper noise.
+
+    Each pixel is assigned a value uniformly drawn from [0,1]. A mask is 
+    constructed for a given  value p with 0 <= p <= 1. If the pixel probability
+    is > p, then the original pixel intensity is kept in place. If the pixel
+    probability is <= p/2 then the pixel final amplitude is set to blackish. 
+    If the pixel probability lies in [p/2,p] then its amplitude is set to 
+    whiteish.
+
+    """
+
+    def __init__(self, p:float=0, keys: Union[str, List['str']] ='image', 
+                 prob:float = 1., allow_missing_keys:bool = False):
+        
+        """
+        Args:
+            p (float): parameter in [0,1]. Fraction of pixels that will be
+                modified. p = 0 corresponds to the identity transformation.
+            keys (string, or list of strings): flags to apply transform to
+                image and/or label.
+            prob (float): probability of the transform being applied to any
+                one volume.
+        """
+        self.p = min(max(0,p),1.)
+        if p < 0 or p > 1:
+            warnings.warn(f'Setting p to {self.p}.')
+
+        MapTransform.__init__(self, keys, allow_missing_keys)
+        RandomizableTransform.__init__(self, prob=prob)
+
+
+    def __call__(self, data):
+
+        d = dict(data)
+        self.randomize(None)
+
+        if not self._do_transform:
+            return d
+        else:
+            for key in self.key_iterator(d):
+                d[key] = self.salt_and_pepper(d[key])
+            return d
+
+
+    def salt_and_pepper(self, x:torch.tensor):
+        """
+        Applies salt and pepper on input volume.
+
+        Returns:
+            x (torch.tensor): volume with salt and pepper noise.
+        """
+        mask = torch.rand(x.size()) # mask[i,j,k] takes value in [0,1]
+        x = x.clone()
+
+        # salt and pepper intensities
+        MAX, MIN = x.max()/2, x.min()/2
+
+        x[mask <= self.p/2] = MIN
+        x[torch.logical_and(mask > self.p/2, mask <= self.p)] = MAX
+        x[torch.logical_and(mask > self.p, mask != 1.)] = x[torch.logical_and(mask > self.p, mask != 1.)]
+
+        return x
