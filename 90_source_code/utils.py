@@ -113,12 +113,15 @@ class model_evaluation:
 
     Methods:
 
-    * _load_UNet: loads instance of UNet model
+    * _load_UNet: loads instance of UNet model.
 
-    * dataset_eval: computes metrics on given dataset dataloader
+    * dataset_eval: computes metrics on given dataset dataloader.
 
-    * add_eval: keeps record of metrics for given dataset
+    * add_eval: keeps record of metrics for given dataset.
 
+    * save: save a pickled version of the class instance.
+    
+    * load_dict: load pickled version of a class instance.
     '''
 
     def __init__(self, model_name:str=None, instance_name:str=None):
@@ -140,10 +143,10 @@ class model_evaluation:
         self.eval_dict = defaultdict(list)
 
 
-    def load_UNet(self,model_name:str):
+    def load_UNet(self,model_path:str) -> None:
 
         '''Function to load model.
-        Args: model_name = name of saved model.pth
+        Args: model_path (string): name of saved model.pth
 
         Returns: instance of UNet with imported weights'''
         
@@ -151,7 +154,7 @@ class model_evaluation:
                      channels=(16, 32, 64, 128, 256),
                      strides=(2, 2, 2, 2),
                      num_res_units=2,).to(device)
-        self.model.load_state_dict(torch.load(root_dir+model_name))
+        self.model.load_state_dict(torch.load(model_path))
 
 
 
