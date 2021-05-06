@@ -124,7 +124,7 @@ class model_evaluation:
     * load_dict: load pickled version of a class instance.
     '''
 
-    def __init__(self, model_name:str=None, instance_name:str=None):
+    def __init__(self, model_path:str=None, instance_name:str=None):
 
         '''
         Args:
@@ -134,9 +134,9 @@ class model_evaluation:
 
         '''
 
-        self.model_name = model_name
-        if model_name:
-            self.load_UNet(model_name)
+        self.model_path = model_path
+        if model_path:
+            self.load_UNet(model_path)
         else:
             self.model = None
         self.instance_name = instance_name
@@ -255,9 +255,9 @@ class model_evaluation:
 
         # use whether a model name was given at instantiation
         # to decide whether the model should be loaded too.
-        original_model_name = self.model_name
+        original_model_path = self.model_path
 
         with open(filename, 'rb') as f:
             self.__dict__.update(pickle.load(f))
-        if original_model_name:
-            self.load_UNet(self.model_name)
+        if original_model_path:
+            self.load_UNet(self.model_path)
