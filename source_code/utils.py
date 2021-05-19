@@ -47,7 +47,22 @@ from filters_and_operators import ConvertToMultiChannelBasedOnBratsClassesd
 
 # Display functions
 
+def show(img: torch.Tensor, k_space: bool = True) -> None:
+    """
+    Displays RBG k-space images nicely. Also accepts 2D images.
 
+    Set k_space = False for regular images.
+    """
+    img = img.clone()
+    if k_space:
+        img = img.abs().log()
+    min, max = img.min(), img.max()
+    img.add_(-min).div_(max-min+1e-5)
+    if len(img.shape) == 3:
+        plt.imshow(img.permute(1, 2, 0))
+    elif len(img.shape) == 2:
+        plt.imshow(img)
+        
 
 def WL_to_LH(window:float, level:float) -> Tuple[float]:
     '''to compute low and high values for amplitude display'''

@@ -9,9 +9,11 @@ from torch.fft import (fftn, fft2,
                        ifft2, ifftn)
 
 from monai.transforms import MapTransform, RandomizableTransform, Randomizable
+from monai.config import KeysCollection
 
 from math import floor
-from typing import Union, List, Tuple
+
+from typing import Any, Dict, Hashable, List, Mapping, Optional, Sequence, Tuple, Union
 
 import warnings
 
@@ -426,3 +428,81 @@ class SaltAndPepper(MapTransform, RandomizableTransform):
         x[torch.logical_and(mask > self.p, mask != 1.)] = x[torch.logical_and(mask > self.p, mask != 1.)]
 
         return x
+
+
+
+#############################################################################
+
+class WrapArtifact(Transform):
+    """
+    Applies wrapping artifacts while keeping the size of the image
+    fixed.
+
+    Args:
+        alpha (float): regulates amplitude of wraparound artifact 
+
+    When called, it assumes the data has shape: (C,H,W) or (C,H,W,D).
+    """
+
+    def __init__(self, alpha: float = 0.5):
+
+        self.alpha = alpha
+
+    def __call__(self, img: torch.tensor):
+
+        n_dims = len(img.shape[1:])
+        # FT
+        k = self._shift_fourier(img, n_dims)
+        # reduce information
+        k[:,1:k.size(1):2,:,:] = k[:,1:k.size(1):2,:,:] * self.alpha
+        k[:,:,1:k.size(2):2,:] = k[:,:,1:k.size(2):2,:] * self.alpha
+        k[:,:,:,1:k.size(3):2] = k[:,:,:,1:k.size(3):2] * self.alpha
+        # map back
+        img = self._inv_shift_fourier(k, n_dims)
+        
+        return img
+
+    def _shift_fourier(self, x: torch.Tensor, n_dims: int) -> torch.tensor:
+        """
+        Applies fourier transform and shifts its output.
+        Only the spatial dimensions get transformed.
+
+        Args:
+            x (torch.tensor): tensor to fourier transform.
+        """
+        out: torch.tensor = torch.fft.fftshift(torch.fft.fftn(x, dim=tuple(range(-n_dims, 0))), 
+                                               dim=tuple(range(-n_dims, 0)))
+        return out
+
+    def _inv_shift_fourier(self, k: torch.Tensor, n_dims: int) -> torch.tensor:
+        """
+        Applies inverse shift and fourier transform. Only the spatial
+        dimensions are transformed.
+        """
+        out: torch.tensor = torch.fft.ifftn(
+            torch.fft.ifftshift(k, dim=tuple(range(-n_dims, 0))), dim=tuple(range(-n_dims, 0))
+        ).real
+        return out
+
+
+class WrapArtifactd(MapTransform):
+    """
+    Dictionary version of WrapArtifact
+    
+    Args:
+        alpha (float): regulates amplitude of wraparound artifact 
+
+    When called, it assumes the data has shape: (C,H,W) or (C,H,W,D).
+    """
+    def __init__(self, keys: KeysCollection, alpha: float = 0.5, 
+                 allow_missing_keys: bool = False):
+
+        MapTransform.__init__(self, keys, allow_missing_keys)
+        self.transform = WrapArtifact(alpha)
+
+    def __call__(self, data: Mapping[Hashable, torch.tensor]):
+
+        d = dict(data)
+        for key in self.key_iterator(d):
+            d[key] = self.transform(d[key])
+        return d
