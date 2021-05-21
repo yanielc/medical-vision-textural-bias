@@ -8,7 +8,7 @@ from torch.fft import (fftn, fft2,
                        fftshift, ifftshift, 
                        ifft2, ifftn)
 
-from monai.transforms import MapTransform, RandomizableTransform, Randomizable
+from monai.transforms import Transform, MapTransform, RandomizableTransform, Randomizable
 from monai.config import KeysCollection
 
 from math import floor
