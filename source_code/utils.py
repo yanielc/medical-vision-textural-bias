@@ -246,7 +246,8 @@ class model_evaluation:
     * load_dict: load pickled version of a class instance.
     '''
 
-    def __init__(self, model_path:str=None, instance_name:str=None):
+    def __init__(self, model_path:str=None, instance_name: str = None, 
+            in_channels: int = 4, out_channels: int = 3):
 
         '''
         Args:
@@ -255,6 +256,8 @@ class model_evaluation:
             instance_name = label for the class instantation
 
         '''
+        self.in_channels = in_channels
+        self.out_channels = out_channels
 
         self.model_path = model_path
         if model_path:
@@ -265,23 +268,59 @@ class model_evaluation:
         self.eval_dict = defaultdict(list)
 
 
-    def load_UNet(self,model_path:str) -> None:
+    def load_UNet(self, model_path:str) -> None:
 
         '''Function to load model.
         Args: model_path (string): name of saved model.pth
 
         Returns: instance of UNet with imported weights'''
         
-        self.model = UNet(dimensions=3, in_channels=4, out_channels=3,
+        self.model = UNet(dimensions=3,
+                     in_channels=self.in_channels,
+                     out_channels=self.out_channels,
                      channels=(16, 32, 64, 128, 256),
                      strides=(2, 2, 2, 2),
                      num_res_units=2,).to(device)
         self.model.load_state_dict(torch.load(model_path))
 
+    def dataset_eval_single(self, test_loader:DataLoader):
+        ''' To evaluate model on given data using Dice metric and a single label.
+        Args:
+            test_data: test data loader
+        Returns:
+            mean metric
+        '''
+        if self.model is None:
+            raise RuntimeError(f'current model is {self.model}.\
+            Use {self.load_UNet.__name__} to load model.')
 
+        self.model.eval()
+        with torch.no_grad():
+            dice_metric = DiceMetric(include_background=True, reduction="mean")
+            post_trans = Compose([Activations(sigmoid=True),
+                                  AsDiscrete(threshold_values=True)])
 
-    def dataset_eval(self, test_loader:DataLoader):
-        ''' To evaluate model on given data using Dice metric
+            metric_sum = 0.
+            metric_count = 0
+
+            for test_data in tqdm(test_loader):
+                val_inputs, val_labels = (
+                    test_data["image"].to(device),
+                    test_data["label"].to(device),
+                )
+                val_outputs = self.model(val_inputs)
+                val_outputs = post_trans(val_outputs)
+                # compute overall mean dice
+                value, not_nans = dice_metric(y_pred=val_outputs, y=val_labels)
+                not_nans = not_nans.item()
+                metric_count += not_nans
+                metric_sum += value.item() * not_nans
+            
+            metric = metric_sum / metric_count
+        return metric
+
+    def dataset_eval_multi(self, test_loader:DataLoader):
+        ''' To evaluate model on given data using Dice metric. It assumes 3-multilabel.
         Args:
             test_data: test data loader
         Returns:
@@ -359,11 +398,18 @@ class model_evaluation:
                         passed, the other arguments are ignored.
         '''
 
-        if data_dict == None:
-            self.eval_dict[name] = self.dataset_eval(test_loader)
+        if self.out_channels > 1:
+            if data_dict == None:
+                self.eval_dict[name] = self.dataset_eval_multi(test_loader)
+            else:
+                for name in data_dict:
+                    self.eval_dict[name] = self.dataset_eval_multi(data_dict[name])
         else:
-            for name in data_dict:
-                self.eval_dict[name] = self.dataset_eval(data_dict[name])
+            if data_dict == None:
+                self.eval_dict[name] = self.dataset_eval_single(test_loader)
+            else:
+                for name in data_dict:
+                    self.eval_dict[name] = self.dataset_eval_single(data_dict[name])
 
     def save(self):
         '''save a the state the dictionary in a pickle'''

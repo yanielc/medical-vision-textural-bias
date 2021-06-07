@@ -21,6 +21,42 @@ import warnings
 ############################################################################
 
 
+class SelectChanneld(MapTransform):
+    """
+    Transform to keep one channel. It assumes the leading
+    dimension is the channel index: [C,H,W,D].
+
+    Args:
+        keys: 'image', 'label', or ['image', 'label'] depending on which data
+                you need to transform.
+        chan_num (int): channel to keep. Provide an int to select the same
+            channel for all provided keys, or a tuple to select different
+            channels per given key. A 1-tuple has the same behavior as an int.
+    """
+
+    def __init__(self, keys, chan_num: Union[int,Sequence[int]], allow_missing_keys=False):
+
+        self.chan_num = chan_num
+        super().__init__(keys, allow_missing_keys)
+
+    def __call__(self, data):
+
+        d = dict(data)
+        if isinstance(self.chan_num, Sequence):
+            if len(self.chan_num) > 1:
+                for i, key in zip(self.chan_num, self.key_iterator(d)):
+                    if d[key].shape[0] - 1 < i:
+                        raise AssertionError(f'Provided channel index {i} larger than max channel index for key = {key}')
+                    d[key] = d[key][i][None,:] # using None to keep the channel axis
+            else:
+                for key in self.key_iterator(d):
+                    d[key] = d[key][self.chan_num[0]][None,:]
+        else:
+            for key in self.key_iterator(d):
+                d[key] = data[key][self.chan_num][None,:]
+        return d
+
+
 class ConvertToMultiChannelBasedOnBratsClassesd(MapTransform):
     """
     Convert labels to multi channels based on brats classes:
