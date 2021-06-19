@@ -144,7 +144,14 @@ class ReCompose(Compose):
             self.transforms = tuple(pipe)
         else:
             pass
-
+        
+    def __add__(self, transforms: Union[Callable, List[Callable]]):
+        """Returns new ReCompose with appended transform"""
+        
+        old = list(self.transforms)
+        transforms = [transforms] if not isinstance(transforms, list) else transforms
+        new = old + transforms
+        return ReCompose(new)
 
 
 class BratsValIterDataset(IterableDataset):

@@ -542,3 +542,32 @@ class WrapArtifactd(MapTransform):
         for key in self.key_iterator(d):
             d[key] = self.transform(d[key])
         return d
+
+
+class SegmentationSlicesd(MapTransform, Randomizable):
+    
+    """Transform to extract three consecutive slices containing
+    a nontrivial segmentation. """
+    
+    def __init__(self, keys, seed: int = None, allow_missing_keys: bool = False):
+        
+        Randomizable.set_random_state(self, seed=seed)
+        MapTransform.__init__(self, keys, allow_missing_keys)
+    
+    def __call__(self, data):
+        """
+        Args:
+            data (Mapping): dictionary to transform"""
+        
+        d = dict(data)
+        
+        val = False
+        # search for index value c such that |x-c| <= 3 contains 1s.
+        while not val:
+            c = self.R.randint(3,60)
+            val = d["label"][0,:,:,c - 3].max() == d["label"][0,:,:,c + 3].max() == 1
+            
+        for key in self.key_iterator(d):
+            d[key] = d[key].squeeze(0)[:,:,c:c+3].transpose(0,2)
+        
+        return d
