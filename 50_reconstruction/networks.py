@@ -88,7 +88,7 @@ class Discriminator(nn.Module):
             nn.LeakyReLU(0.2, inplace=True),
             # state size. (ndf*16) x 4 x 4
             nn.Conv2d(ndf * 16, 1, 4, 1, 0, bias=False),
-            nn.Sigmoid()
+            # nn.Sigmoid()
         )
 
     def forward(self, input):

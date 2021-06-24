@@ -73,7 +73,7 @@ class Sliced(MapTransform, Randomizable):
             data (Mapping): dictionary to transform"""
 
         d = dict(data)
-        c = self.R.randint(20,40)
+        c = self.R.randint(25,35)
 
         for key in self.key_iterator(d):
             d[key] = d[key][:,:,:,c]
@@ -135,7 +135,7 @@ train_ds = DecathlonDataset(
     section="training",
     download=False,
     num_workers=4,
-    cache_num= 4 #100
+    cache_num= 1 # 100
 )
 
 val_ds = DecathlonDataset(
@@ -145,8 +145,23 @@ val_ds = DecathlonDataset(
     section="validation",
     download=False,
     num_workers=4,
-    cache_num= 4 #2
+    cache_num= 2 # 4
 )
 
 val_ds, _ = random_split(val_ds, [48, 48], torch.Generator().manual_seed(0))
 
+
+# to plot
+
+# train_loader = DataLoader(train_ds, batch_size=8, shuffle=True, num_workers=4)
+
+# import torchvision.utils as vutils
+# import matplotlib.pyplot as plt 
+# # Plot some training images
+# real_batch = next(iter(train_loader))
+# real_batch = real_batch["image"]
+# plt.figure(figsize=(8,8))
+# plt.axis("off")
+# plt.title("Training Images")
+# plt.imshow(np.transpose(vutils.make_grid(real_batch[:64], padding=2, normalize=True).cpu(),(1,2,0)))
+# plt.savefig('examples.png')
