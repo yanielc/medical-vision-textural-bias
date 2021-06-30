@@ -85,7 +85,22 @@ class ConvertToMultiChannelBasedOnBratsClassesd(MapTransform):
             d[key] = np.stack(result, axis=0).astype(np.float32)
         return d
 
+
+class WholeTumorTCGA(MapTransform):
+    """
+    Convert TCGA segmentation map to whole tumor segmentation.
+    """
+    def __init__(self, keys, allow_missing_keys=False):
+        MapTransform.__init__(self, keys, allow_missing_keys)
+                              
+    def __call__(self, data):
+        d = dict(data)
+        for key in self.key_iterator(d):
+            d[key] = (d[key] != 0)[None,:].astype(np.float32) 
+        return d
+
 ############################################################################
+
 class disk_mask():
     '''
     Class to generate and apply mask with a circular boundary.
