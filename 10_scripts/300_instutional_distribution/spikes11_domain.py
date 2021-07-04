@@ -55,7 +55,7 @@ SOURCE_CODE_PATH = '/homes/yc7620/Documents/medical-vision-textural-bias/source_
 import sys
 sys.path.append(SOURCE_CODE_PATH)
 
-from filters_and_operators import WholeTumorTCGA 
+from filters_and_operators import WholeTumorTCGA, RandPlaneWaves_ellipsoid 
 from utils import ReCompose
 
 # set determinism for reproducibility
@@ -68,17 +68,22 @@ print('root_dir', root_dir)
 #################################################################
 # blurb
 
-print('baseline model on three modalities. excluding one institution\n')
+print('stylized model on four modalities. excluding one institution\n')
 
 #################################################################
 # SCRIPT PARAMETERS 
 
 
-#print(f'''Using parameters  (IMAGE_CHAN, LABEL_CHAN) =
-#        {(IMAGE_CHAN, LABEL_CHAN)}\n\n''')
+# set intensity
+INTENSITY = 11.
+# set sampling ellipsoid
+AA, BB, CC = 55.,55.,30.
 
 
-JOB_NAME = f"baseline_model_3mod_WT"
+print(f'''Using parameters k-spike INTENSITY = {INTENSITY} \n\n''')
+
+
+JOB_NAME = f"spikes{INTENSITY}_model_sourceDist_4mods_WT"
 print(f"JOB_NAME = {JOB_NAME}\n")
 
 # create dir
@@ -115,6 +120,7 @@ train_transform = ReCompose(
         RandScaleIntensityd("image", factors=0.1, prob=0.5),
         RandShiftIntensityd("image", offsets=0.1, prob=0.5),
         ToTensord(keys=["image", "label"]),
+        RandPlaneWaves_ellipsoid('image',AA,BB,CC, intensity_value=INTENSITY, prob=1.) 
     ]
 )
 
@@ -132,6 +138,7 @@ val_transform = ReCompose(
         CenterSpatialCropd(keys=["image", "label"], roi_size=[128, 128, 64]),
         NormalizeIntensityd(keys="image", nonzero=True, channel_wise=True),
         ToTensord(keys=["image", "label"]),
+        RandPlaneWaves_ellipsoid('image',AA,BB,CC, intensity_value=INTENSITY, prob=1.)
     ]
 )
 
@@ -151,20 +158,21 @@ with open(os.path.join(root_dir, 'train_sequence_by_modality.json'), 'r') as f:
 train_seq_flair, val_seq_flair = partition_dataset(data_seqs_4mods["FLAIR"], [0.9, 0.1], shuffle=True, seed=0)
 train_seq_t1, val_seq_t1 = partition_dataset(data_seqs_4mods["T1"], [0.9, 0.1], shuffle=True, seed=0)
 train_seq_t1gd, val_seq_t1gd = partition_dataset(data_seqs_4mods["T1Gd"], [0.9, 0.1], shuffle=True, seed=0)
-
+train_seq_t2, val_seq_t2 = partition_dataset(data_seqs_4mods["T2"], [0.9, 0.1], shuffle=True, seed=0)
 # create datasets
 
 train_ds_flair = CacheDataset(train_seq_flair, train_transform, cache_num=100)
 train_ds_t1 = CacheDataset(train_seq_t1, train_transform, cache_num=100)
 train_ds_t1gd = CacheDataset(train_seq_t1gd, train_transform, cache_num=100)
+train_ds_t2 = CacheDataset(train_seq_t2, train_transform, cache_num=100)
 
 val_ds_flair = CacheDataset(val_seq_flair, val_transform, cache_num=50)
 val_ds_t1 = CacheDataset(val_seq_t1, val_transform, cache_num=50)
 val_ds_t1gd = CacheDataset(val_seq_t1gd, val_transform, cache_num=50)
+val_ds_t2 = CacheDataset(val_seq_t2, val_transform, cache_num=50)
 
-
-val_ds = ConcatDataset([val_ds_flair, val_ds_t1, val_ds_t1gd])
-train_ds = ConcatDataset([train_ds_flair, train_ds_t1, train_ds_t1gd])
+val_ds = ConcatDataset([val_ds_flair, val_ds_t1, val_ds_t1gd, val_ds_t2])
+train_ds = ConcatDataset([train_ds_flair, train_ds_t1, train_ds_t1gd, train_ds_t2])
 
 # dataloaders
 train_loader = DataLoader(train_ds, batch_size=2, shuffle=True, num_workers=4)
