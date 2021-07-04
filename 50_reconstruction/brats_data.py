@@ -135,7 +135,7 @@ train_ds = DecathlonDataset(
     section="training",
     download=False,
     num_workers=4,
-    cache_num= 1 # 100
+    cache_num= 100 # 100
 )
 
 val_ds = DecathlonDataset(

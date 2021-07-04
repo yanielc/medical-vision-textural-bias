@@ -142,10 +142,6 @@ class Discriminator(nn.Module):
 
 
 
-
-
-
-
 if __name__ == "__main__":
 
     from monai.data import DataLoader

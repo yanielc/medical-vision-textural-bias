@@ -8,19 +8,18 @@ resource.setrlimit(resource.RLIMIT_NOFILE, (4096, rlimit[1]))  #
 
 import os
 import shutil
-import tempfile
+import json
 
 import matplotlib.pyplot as plt
 import numpy as np
-from monai.apps import DecathlonDataset
 from monai.config import print_config
-from monai.data import DataLoader
+from monai.data import DataLoader, CacheDataset, partition_dataset
 from monai.losses import DiceLoss
 from monai.metrics import DiceMetric
 from monai.networks.nets import UNet
 from monai.transforms import (
     Activations,
-    AsChannelFirstd,
+    AddChanneld,
     AsDiscrete,
     CenterSpatialCropd,
     Compose,
@@ -38,7 +37,7 @@ from monai.transforms import (
 from monai.utils import set_determinism
 
 import torch
-from torch.utils.data import random_split
+from torch.utils.data import ConcatDataset
 
 
 import matplotlib.pyplot as plt
@@ -56,33 +55,36 @@ SOURCE_CODE_PATH = '/homes/yc7620/Documents/medical-vision-textural-bias/source_
 import sys
 sys.path.append(SOURCE_CODE_PATH)
 
-from filters_and_operators import (ConvertToMultiChannelBasedOnBratsClassesd,
-        SelectChanneld,
-        RandFourierDiskMaskd)
-
-from utils import show_slice_and_fourier
-
+from filters_and_operators import WholeTumorTCGA, RandPlaneWaves_ellipsoid 
+from utils import ReCompose
 
 # set determinism for reproducibility
 set_determinism(seed=0)
 
 print_config()
 
-root_dir = '/vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/'
+root_dir = '/vol/bitbucket/yc7620/90_data/53_TCGA_data/' 
 print('root_dir', root_dir)
-#############################################################################
+#################################################################
+# blurb
 
+print('stylized model on four modalities. excluding one institution\n')
+
+#################################################################
 # SCRIPT PARAMETERS 
 
-MASK_RADIUS = 9
 
-IMAGE_CHAN, LABEL_CHAN = (0,1)
+# set intensity
+INTENSITY = 9.
+# set sampling ellipsoid
+AA, BB, CC = 55.,55.,30.
 
-print(f'''Using parameters MASK_RADIUS={MASK_RADIUS}, (IMAGE_CHAN, LABEL_CHAN) =
-        {(IMAGE_CHAN, LABEL_CHAN)}\n\n''')
+
+print(f'''Using parameters k-spike INTENSITY = {INTENSITY} \n\n''')
 
 
-JOB_NAME = f"stylized_model_gibbs{MASK_RADIUS}_FLAIRmod_WT"
+JOB_NAME = f"spikes{INTENSITY}_model_sourceDist_4mods_WT"
+print(f"JOB_NAME = {JOB_NAME}\n")
 
 # create dir
 
@@ -93,23 +95,21 @@ except:
     print('creating version _2 of working dir') 
     JOB_NAME = JOB_NAME + '_2'
     working_dir = os.path.join(root_dir,JOB_NAME)
-
+    os.mkdir(working_dir)
 #############################################################################
 
 
 # Preprocessing transforms. Note we use wrapping artifacts. 
 
-train_transform = Compose(
+train_transform = ReCompose(
     [
-        # load 4 Nifti images and stack them together
         LoadImaged(keys=["image", "label"]),
-        AsChannelFirstd(keys="image"),
-        ConvertToMultiChannelBasedOnBratsClassesd(keys="label"),
-        SelectChanneld(["image", "label"], (IMAGE_CHAN, LABEL_CHAN)),
+        AddChanneld(keys="image"),
+        WholeTumorTCGA(keys="label"),
         Spacingd(
             keys=["image", "label"],
             pixdim=(1.5, 1.5, 2.0),
-            mode=("bilinear", "nearest"),
+            mode=("bilinear", "nearest")
         ),
         Orientationd(keys=["image", "label"], axcodes="RAS"),
         RandSpatialCropd(
@@ -117,19 +117,18 @@ train_transform = Compose(
         ),
         RandFlipd(keys=["image", "label"], prob=0.5, spatial_axis=0),
         NormalizeIntensityd(keys="image", nonzero=True, channel_wise=True),
-        RandScaleIntensityd(keys="image", factors=0.1, prob=0.5),
-        RandShiftIntensityd(keys="image", offsets=0.1, prob=0.5),
+        RandScaleIntensityd("image", factors=0.1, prob=0.5),
+        RandShiftIntensityd("image", offsets=0.1, prob=0.5),
         ToTensord(keys=["image", "label"]),
-        RandFourierDiskMaskd(keys='image', r=MASK_RADIUS, inside_off=False, prob=1.),
+        RandPlaneWaves_ellipsoid('image',AA,BB,CC, intensity_value=INTENSITY, prob=1.) 
     ]
 )
 
-val_transform = Compose(
+val_transform = ReCompose(
     [
         LoadImaged(keys=["image", "label"]),
-        AsChannelFirstd(keys="image"),
-        ConvertToMultiChannelBasedOnBratsClassesd(keys="label"),
-        SelectChanneld(["image", "label"], (IMAGE_CHAN, LABEL_CHAN)),
+        AddChanneld(keys="image"),
+        WholeTumorTCGA(keys="label"),
         Spacingd(
             keys=["image", "label"],
             pixdim=(1.5, 1.5, 2.0),
@@ -139,9 +138,10 @@ val_transform = Compose(
         CenterSpatialCropd(keys=["image", "label"], roi_size=[128, 128, 64]),
         NormalizeIntensityd(keys="image", nonzero=True, channel_wise=True),
         ToTensord(keys=["image", "label"]),
-        RandFourierDiskMaskd(keys='image', r=MASK_RADIUS, inside_off=False, prob=1.),
-        ]
+        RandPlaneWaves_ellipsoid('image',AA,BB,CC, intensity_value=INTENSITY, prob=1.)
+    ]
 )
+
 
 print('\n')
 print('training transforms: ', train_transform.transforms,'\n')
@@ -150,29 +150,31 @@ print('validation transforms: ', val_transform.transforms, '\n')
 
 # Dataloading
 
+# load data dictionaries
+with open(os.path.join(root_dir, 'train_sequence_by_modality.json'), 'r') as f:
+    data_seqs_4mods = json.load(f)
 
-train_ds = DecathlonDataset(
-    root_dir=root_dir,
-    task="Task01_BrainTumour",
-    transform=train_transform,
-    section="training",
-    download=False,
-    num_workers=4,
-    cache_num=100
-)
+# split off training and validation     
+train_seq_flair, val_seq_flair = partition_dataset(data_seqs_4mods["FLAIR"], [0.9, 0.1], shuffle=True, seed=0)
+train_seq_t1, val_seq_t1 = partition_dataset(data_seqs_4mods["T1"], [0.9, 0.1], shuffle=True, seed=0)
+train_seq_t1gd, val_seq_t1gd = partition_dataset(data_seqs_4mods["T1Gd"], [0.9, 0.1], shuffle=True, seed=0)
+train_seq_t2, val_seq_t2 = partition_dataset(data_seqs_4mods["T2"], [0.9, 0.1], shuffle=True, seed=0)
+# create datasets
 
-val_ds = DecathlonDataset(
-    root_dir=root_dir,
-    task="Task01_BrainTumour",
-    transform=val_transform,
-    section="validation",
-    download=False,
-    num_workers=4,
-    cache_num=50
-)
+train_ds_flair = CacheDataset(train_seq_flair, train_transform, cache_num=100)
+train_ds_t1 = CacheDataset(train_seq_t1, train_transform, cache_num=100)
+train_ds_t1gd = CacheDataset(train_seq_t1gd, train_transform, cache_num=100)
+train_ds_t2 = CacheDataset(train_seq_t2, train_transform, cache_num=100)
 
-val_ds, test_ds = random_split(val_ds, [48, 48], torch.Generator().manual_seed(0))
+val_ds_flair = CacheDataset(val_seq_flair, val_transform, cache_num=50)
+val_ds_t1 = CacheDataset(val_seq_t1, val_transform, cache_num=50)
+val_ds_t1gd = CacheDataset(val_seq_t1gd, val_transform, cache_num=50)
+val_ds_t2 = CacheDataset(val_seq_t2, val_transform, cache_num=50)
 
+val_ds = ConcatDataset([val_ds_flair, val_ds_t1, val_ds_t1gd, val_ds_t2])
+train_ds = ConcatDataset([train_ds_flair, train_ds_t1, train_ds_t1gd, train_ds_t2])
+
+# dataloaders
 train_loader = DataLoader(train_ds, batch_size=2, shuffle=True, num_workers=4)
 val_loader = DataLoader(val_ds, batch_size=2, shuffle=False, num_workers=4)
 

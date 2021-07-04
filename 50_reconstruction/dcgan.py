@@ -22,7 +22,7 @@ nz = 100
 batch_size = 4
 
 # Number of training epochs
-num_epochs = 100
+num_epochs = 200
 
 # Learning rate for optimizers
 lr = 0.0002
@@ -171,7 +171,7 @@ plt.subplot(1,2,2)
 plt.axis("off")
 plt.title("Fake Images")
 plt.imshow(np.transpose(img_list[-1],(1,2,0)))
-plt.savefig('b.png')
+plt.savefig(f'results_{num_epochs}epochs.png')
 plt.show()
 
 plt.figure(figsize=(10,5))
