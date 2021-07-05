@@ -57,7 +57,7 @@ root_dir = '/vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/'
 print('root_dir', root_dir)
 
 #########################################
-class ThreeSliced(MapTransform, Randomizable):
+class RandConcatd(MapTransform, Randomizable):
 
     """Transform to extract three consecutive slices containing
     a nontrivial segmentation. """
@@ -70,13 +70,16 @@ class ThreeSliced(MapTransform, Randomizable):
     def __call__(self, data):
         """
         Args:
-            data (Mapping): dictionary to transform"""
+            data (Mapping): dictionary to transform. Arrays must
+                be torch tensors.   
+        """
 
         d = dict(data)
         c = self.R.randint(25,35)
 
         for key in self.key_iterator(d):
-            d[key] = d[key][:,:,:,c-1:c+1][0].swapaxes(0,2)
+            s = d[key][0,:,:,c][None,:]
+            d[key] = torch.cat([s,s])
         return d
 
 #########################################
@@ -101,8 +104,8 @@ train_transform = Compose(
         NormalizeIntensityd(keys="image", nonzero=True, channel_wise=True),
         RandScaleIntensityd(keys="image", factors=0.1, prob=0.5),
         RandShiftIntensityd(keys="image", offsets=0.1, prob=0.5),
-        ThreeSliced("image"),
         ToTensord(keys="image"),
+        RandConcatd("image")
     ]
 )
 
@@ -120,8 +123,8 @@ val_transform = Compose(
         Orientationd(keys="image", axcodes="RAS"),
         CenterSpatialCropd(keys="image", roi_size=[128, 128, 64]),
         NormalizeIntensityd(keys="image", nonzero=True, channel_wise=True),
-        ThreeSliced("image"),
         ToTensord(keys="image"),
+        RandConcatd("image"),
         ]
 )
 
@@ -135,7 +138,7 @@ train_ds = DecathlonDataset(
     section="training",
     download=False,
     num_workers=4,
-    cache_num=  50 #100
+    cache_num=100
 )
 
 val_ds = DecathlonDataset(
@@ -145,7 +148,7 @@ val_ds = DecathlonDataset(
     section="validation",
     download=False,
     num_workers=4,
-    cache_num= 2 # 4
+    cache_num= 1 # 4
 )
 
 val_ds, _ = random_split(val_ds, [48, 48], torch.Generator().manual_seed(0))
@@ -165,3 +168,4 @@ plt.axis("off")
 plt.title("Training Images")
 plt.imshow(np.transpose(vutils.make_grid(real_batch[:64], padding=2, n_row=3, normalize=True).cpu(),(1,2,0))[:,:,0])
 plt.savefig('examples.png')
+

@@ -13,17 +13,17 @@ import torch.optim as optim
 import torchvision.utils as vutils
 
 import numpy as np 
-
 import matplotlib.pyplot as plt
+import os
 
 # Batch size during training
 batch_size = 4
 
 # Number of training epochs
-num_epochs = 200 # 100
+num_epochs = 400  
 
 # Learning rate for optimizers
-lr = 0.0002
+lr = 0.0001
 
 # Beta1 hyperparam for Adam optimizers
 beta1 = 0.5
@@ -73,6 +73,8 @@ optimizerG = optim.Adam(G.parameters(), lr=lr, betas=(beta1, 0.999))
 img_list = []
 G_losses = []
 D_losses = []
+mean_G_losses =[]
+mean_D_losses = []
 iters = 0
 
 print("Starting Training Loop...")
@@ -127,7 +129,7 @@ for epoch in range(num_epochs):
         adv_loss = criterion(output, label)
         # Cyclic loss:
         fake_consistency_loss = l2_loss(downsampled_batch, fake)
-        real_consistency_loss = l2_loss(G(downsampled_batch), real_batch)
+        real_consistency_loss = l2_loss(G(compress(real_batch)), real_batch)
         cyclic_loss = alpha*fake_consistency_loss + gamma*real_consistency_loss
         # total G loss
         errG = adv_loss + cyclic_loss
@@ -156,6 +158,12 @@ for epoch in range(num_epochs):
 
         iters += 1
 
+    mean_D_losses.append(np.mean(D_losses))
+    mean_G_losses.append(np.mean(G_losses))
+
+# save generator
+path = '/vol/bitbucket/yc7620/90_data/90_recon/'
+torch.save(G.state_dict(), os.path.join(path, f"reconGan_G_epochs{num_epochs}.pth"))
 
 # Grab a batch of real images from the dataloader
 real_batch = next(iter(train_loader))
@@ -172,13 +180,13 @@ plt.subplot(1,2,2)
 plt.axis("off")
 plt.title("Fake Images")
 plt.imshow(np.transpose(img_list[-1],(1,2,0))[:,:,0])
-plt.savefig('images.png')
+plt.savefig(f'images_epochs{num_epochs}.png')
 plt.show()
 
 plt.figure(figsize=(10,5))
 plt.title("Generator and Discriminator Loss During Training")
-plt.plot(G_losses,label="G")
-plt.plot(D_losses,label="D")
+plt.plot(mean_G_losses,label="G")
+plt.plot(mean_D_losses,label="D")
 plt.xlabel("iterations")
 plt.ylabel("Loss")
 plt.legend()
