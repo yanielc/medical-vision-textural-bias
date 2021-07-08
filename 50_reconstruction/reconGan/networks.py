@@ -5,8 +5,9 @@ import torch.nn as nn
 
 class ResidualBlock(nn.Module):
     """
-    To be used in both in the encoder and decoder blocks. The skip connection
-    alliviates the vanishing gradient problem.
+    To be used in both in the encoder and decoder blocks. 
+        * The skip connection alliviates the vanishing gradient problem.
+        * InstanceNorm for contrast normalization only.
 
     Args:
         nf (int): parametrizes numbers of filters for the block. Should be an even
@@ -18,7 +19,7 @@ class ResidualBlock(nn.Module):
         self.main = nn.Sequential(
             nn.Conv2d(nf, nf, kernel_size = 3, stride = 1, padding = 1, bias = True),
             nn.InstanceNorm2d(num_features = nf),
-            nn.PReLU(),
+            nn.PReLU(), # make it leaky?
             nn.Conv2d(nf, nf // 2, kernel_size = 3, stride = 1, padding = 1, bias = True),
             nn.InstanceNorm2d(num_features = nf // 2),
             nn.PReLU(),
@@ -32,7 +33,9 @@ class ResidualBlock(nn.Module):
 
 
 class ResidualEncoder(nn.Module):
-    """Basic unit of the encoding arm.
+    """
+    Basic unit of the encoding arm. It uses the residual block to obtain 
+        deeper block.
     Args:
         in_chans (int): number of input channels.
     """
@@ -52,8 +55,11 @@ class ResidualEncoder(nn.Module):
     def __call__(self, x):
         return self.main(x)
 
+    
 class ResidualDecoder(nn.Module):
-    """Basic unit of the decoding arm.
+    """
+    Basic unit of the decoding arm. It uses the residual block to obtain 
+        deeper block.
     Args:
         in_chans (int): number of input channels
     """
@@ -72,6 +78,7 @@ class ResidualDecoder(nn.Module):
 
     def __call__(self, x):
         return self.main(x)
+
 
 class ResUnetGenerator(nn.Module):
     """
@@ -99,7 +106,10 @@ class ResUnetGenerator(nn.Module):
         self.d1 = ResidualDecoder(nf*2, nf*1)
         self.d0 = ResidualDecoder(nf*1, nf*1)
 
-        self.final = nn.Conv2d(nf*1, in_chans, kernel_size = 3, stride = 1, padding = 1, bias = True)
+        self.final = nn.Sequential(
+            nn.Conv2d(nf*1, in_chans, kernel_size = 3, stride = 1, padding = 1, bias = True),
+            nn.Tanh()
+        )
 
     def forward(self, x):
         # assuming input size = B x in_chans x 128 x 128
@@ -112,7 +122,7 @@ class ResUnetGenerator(nn.Module):
         de2 = self.d2(de3 + en3)
         de1 = self.d1(de2 + en2)
         de0 = self.d0(de1 + en1)
-
+        
         out = self.final(de0) + x
         return out
 
@@ -137,7 +147,7 @@ class Discriminator(nn.Module):
         )
 
     def forward(self, x):
-
+        
         return self.main(x)
 
 
@@ -152,10 +162,10 @@ if __name__ == "__main__":
     # d = ResidualDecoder(2,2)
 
     print(img.size())
-    # G = ResUnetGenerator(2, 16)
+    G = ResUnetGenerator(2, 16)
     # print(sum(p.numel() for p in G.parameters() if p.requires_grad))
     D = Discriminator(2, 16)
-    out = D(img)
+    out = G(img)
     print(out.size())
     # h = e(img)
     # print(h.size())

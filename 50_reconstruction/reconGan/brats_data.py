@@ -156,16 +156,16 @@ val_ds, _ = random_split(val_ds, [48, 48], torch.Generator().manual_seed(0))
 
 # to plot
 
-train_loader = DataLoader(train_ds, batch_size=8, shuffle=True, num_workers=4)
+# train_loader = DataLoader(train_ds, batch_size=8, shuffle=True, num_workers=4)
 
-import torchvision.utils as vutils
-import matplotlib.pyplot as plt 
-# Plot some training images
-real_batch = next(iter(train_loader))
-real_batch = real_batch["image"]
-plt.figure(figsize=(20,20))
-plt.axis("off")
-plt.title("Training Images")
-plt.imshow(np.transpose(vutils.make_grid(real_batch[:64], padding=2, n_row=3, normalize=True).cpu(),(1,2,0))[:,:,0])
-plt.savefig('examples.png')
+# import torchvision.utils as vutils
+# import matplotlib.pyplot as plt 
+# # Plot some training images
+# real_batch = next(iter(train_loader))
+# real_batch = real_batch["image"]
+# plt.figure(figsize=(20,20))
+# plt.axis("off")
+# plt.title("Training Images")
+# plt.imshow(np.transpose(vutils.make_grid(real_batch[:64], padding=2, n_row=3, normalize=True).cpu(),(1,2,0))[:,:,0])
+# plt.savefig('examples.png')
 

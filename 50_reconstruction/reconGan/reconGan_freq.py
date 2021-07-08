@@ -29,8 +29,8 @@ lr = 0.0001
 beta1 = 0.5
 
 # cyclic loss parameters
-alpha = 1
-gamma = 10
+alpha = 15
+gamma = 0.1
 
 # device
 device = torch.device("cuda:0")
@@ -40,7 +40,7 @@ device = torch.device("cuda:0")
 # dataloaders
 train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=4)
 val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=4)
-# TODO bring in val
+
 
 ################
 
@@ -128,9 +128,18 @@ for epoch in range(num_epochs):
         # Adversarial loss: Calculate G's loss based on this output
         adv_loss = criterion(output, label)
         # Cyclic loss:
-        fake_consistency_loss = l2_loss(downsampled_batch, fake)
-        real_consistency_loss = l2_loss(G(compress(real_batch)), real_batch)
-        cyclic_loss = alpha*fake_consistency_loss + gamma*real_consistency_loss
+        img_consistency = l2_loss(real_batch, fake)
+        
+        # separate real and imaginary parts of freq component
+        real_k = torch.fft.fftn(real_batch, dim=(-2,-1))
+        real_k_r, real_k_i = real_k.real, real_k.imag
+        
+        fake_k = torch.fft.fftn(fake, dim=(-2,-1))
+        fake_k_r, fake_k_i = fake_k.real, fake_k.imag
+        
+        freq_conistency = l2_loss(real_k_r, fake_k_r) + l2_loss(real_k_i, fake_k_i)
+        
+        cyclic_loss = alpha*img_consistency + gamma*freq_conistency
         # total G loss
         errG = adv_loss + cyclic_loss
 
@@ -150,11 +159,16 @@ for epoch in range(num_epochs):
         G_losses.append(errG.item())
         D_losses.append(errD.item())
 
-        # Check how the generator is doing by saving G's output on fixed_noise
-        if (iters % 25 == 0) or ((epoch == num_epochs-1) and (i == len(train_loader)-1)):
-            with torch.no_grad():
-                fake = G(downsampled_batch).detach().cpu()
-            img_list.append(vutils.make_grid(fake, padding=2, normalize=True))
+    # Check how the generator is doing by saving G's output on fixed_noise
+    if (epoch % 5 == 0):
+        with torch.no_grad():
+            fake = G(downsampled_batch).detach().cpu()
+        
+            plt.figure(figsize=(20,20))
+            plt.axis("off")
+            plt.title(f"Images at epoch {epoch}")
+            plt.imshow(np.transpose(vutils.make_grid(fake, padding=2, n_row=3, normalize=True).cpu(),(1,2,0))[:,:,0])
+            plt.savefig(f'images/generated_epoch{epoch}.png')
 
         iters += 1
 
@@ -166,22 +180,22 @@ path = '/vol/bitbucket/yc7620/90_data/90_recon/'
 torch.save(G.state_dict(), os.path.join(path, f"reconGan_G_epochs{num_epochs}.pth"))
 
 # Grab a batch of real images from the dataloader
-real_batch = next(iter(train_loader))
-real_batch = real_batch["image"]
-# Plot the real images
-plt.figure(figsize=(15,15))
-plt.subplot(1,2,1)
-plt.axis("off")
-plt.title("Real Images")
-plt.imshow(np.transpose(vutils.make_grid(real_batch.to(device)[:64], padding=5, normalize=True).cpu(),(1,2,0))[:,:,0])
+# real_batch = next(iter(train_loader))
+# real_batch = real_batch["image"]
+# # Plot the real images
+# plt.figure(figsize=(15,15))
+# plt.subplot(1,2,1)
+# plt.axis("off")
+# plt.title("Real Images")
+# plt.imshow(np.transpose(vutils.make_grid(real_batch.to(device)[:64], padding=5, normalize=True).cpu(),(1,2,0))[:,:,0])
 
 # Plot the fake images from the last epoch
-plt.subplot(1,2,2)
-plt.axis("off")
-plt.title("Fake Images")
-plt.imshow(np.transpose(img_list[-1],(1,2,0))[:,:,0])
-plt.savefig(f'images_epochs{num_epochs}.png')
-plt.show()
+# plt.subplot(1,2,2)
+# plt.axis("off")
+# plt.title("Fake Images")
+# plt.imshow(np.transpose(img_list[-1],(1,2,0))[:,:,0])
+# plt.savefig(f'images_epochs{num_epochs}.png')
+# plt.show()
 
 plt.figure(figsize=(10,5))
 plt.title("Generator and Discriminator Loss During Training")
