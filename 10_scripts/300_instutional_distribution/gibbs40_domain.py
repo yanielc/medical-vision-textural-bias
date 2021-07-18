@@ -73,9 +73,9 @@ print('stylized model on four modalities. excluding one institution\n')
 #################################################################
 # SCRIPT PARAMETERS 
 
-MASK_RADIUS = 25
+MASK_RADIUS = 40
 
-print(f'''Using parameters MASK_RADIUS = {MASK_RADIUS} \n\n''')
+print(f'''Using parameters MASK_RADIUS = {MASK_RADIUS}  \n\n''')
 
 
 JOB_NAME = f"gibbs{MASK_RADIUS}_model_sourceDist_4mods_WT"

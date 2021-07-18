@@ -38,6 +38,7 @@ from monai.utils import set_determinism
 
 import torch
 from torch.utils.data import ConcatDataset
+import torch.nn as nn
 
 
 import matplotlib.pyplot as plt
@@ -55,9 +56,9 @@ SOURCE_CODE_PATH = '/homes/yc7620/Documents/medical-vision-textural-bias/source_
 import sys
 sys.path.append(SOURCE_CODE_PATH)
 
-from filters_and_operators import WholeTumorTCGA, RandFourierDiskMaskd 
+from filters_and_operators import WholeTumorTCGA 
 from utils import ReCompose
-
+from stylization_layers import GibbsNoiseLayer
 # set determinism for reproducibility
 set_determinism(seed=0)
 
@@ -68,17 +69,16 @@ print('root_dir', root_dir)
 #################################################################
 # blurb
 
-print('stylized model on four modalities. excluding one institution\n')
+print('stylized network on four modalities. excluding one institution\n')
 
 #################################################################
 # SCRIPT PARAMETERS 
 
-MASK_RADIUS = 25
 
-print(f'''Using parameters MASK_RADIUS = {MASK_RADIUS} \n\n''')
+# gibbs layer starting point
+alpha = 0.5
 
-
-JOB_NAME = f"gibbs{MASK_RADIUS}_model_sourceDist_4mods_WT"
+JOB_NAME = f"gibbs{alpha}_layer_model_sourceDist_4mods_WT"
 print(f"JOB_NAME = {JOB_NAME}\n")
 
 # create dir
@@ -115,7 +115,6 @@ train_transform = ReCompose(
         RandScaleIntensityd("image", factors=0.1, prob=0.5),
         RandShiftIntensityd("image", offsets=0.1, prob=0.5),
         ToTensord(keys=["image", "label"]),
-        RandFourierDiskMaskd(keys='image', r=MASK_RADIUS, inside_off=False, prob=1.),
     ]
 )
 
@@ -133,7 +132,6 @@ val_transform = ReCompose(
         CenterSpatialCropd(keys=["image", "label"], roi_size=[128, 128, 64]),
         NormalizeIntensityd(keys="image", nonzero=True, channel_wise=True),
         ToTensord(keys=["image", "label"]),
-        RandFourierDiskMaskd(keys='image', r=MASK_RADIUS, inside_off=False, prob=1.),
     ]
 )
 
@@ -141,7 +139,6 @@ val_transform = ReCompose(
 print('\n')
 print('training transforms: ', train_transform.transforms,'\n')
 print('validation transforms: ', val_transform.transforms, '\n')
-###########################################################################
 ###########################################################################
 
 # Dataloading
@@ -163,7 +160,7 @@ train_seq_t1gd = data_seqs_4mods["T1Gd"]
 train_seq_t2 = data_seqs_4mods["T2"]
 
 # create training datasets
-CACHE_NUM = 100
+CACHE_NUM = 5
 
 train_ds_flair = CacheDataset(train_seq_flair, train_transform, cache_num=CACHE_NUM)
 train_ds_t1 = CacheDataset(train_seq_t1, train_transform, cache_num=CACHE_NUM)
@@ -192,20 +189,35 @@ val_loader = DataLoader(val_ds, batch_size=2, shuffle=False, num_workers=4)
 print('Data loaders created.\n')
 ############################################################################
 
-############################################################################
-
 # Create model, loss, optimizer
 
+
+
+class Gibbs_UNet(nn.Module):
+    """ResUnet with Gibbs layer"""
+    
+    def __init__(self, alpha=None):
+        super().__init__()
+        
+        self.gibbs = GibbsNoiseLayer(alpha)
+        
+        self.ResUnet = UNet(
+        dimensions=3,
+        in_channels=1,
+        out_channels=1,
+        channels=(16, 32, 64, 128, 256),
+        strides=(2, 2, 2, 2),
+        num_res_units=2,
+    )
+        
+    def forward(self,img):
+        img = self.gibbs(img) 
+        img = self.ResUnet(img)
+        return img
+    
 device = torch.device("cuda:0")
 
-model = UNet(
-    dimensions=3,
-    in_channels=1,
-    out_channels=1,
-    channels=(16, 32, 64, 128, 256),
-    strides=(2, 2, 2, 2),
-    num_res_units=2,
-).to(device)
+model = Gibbs_UNet(alpha).to(device)
 
 loss_function = DiceLoss(to_onehot_y=False, sigmoid=True, squared_pred=True)
 
@@ -225,6 +237,7 @@ best_metric = -1
 best_metric_epoch = -1
 epoch_loss_values = []
 metric_values = []
+gibbs_values = [] # store the Gibbs trajectory
 
 print('\n Training started... \n')
 
@@ -235,6 +248,9 @@ for epoch in range(max_epochs):
     epoch_loss = 0
     step = 0
     for batch_data in train_loader:
+        #save gibbs trajectory
+        gibbs_values.append(model.gibbs.alpha.detach().item())
+        
         step += 1
         inputs, labels = (
             batch_data["image"].to(device),
@@ -331,7 +347,7 @@ print('Saving epoch_loss_values and metrics')
 
 np.savetxt(os.path.join(working_dir, f'epoch_loss_values_{JOB_NAME}.txt'), np.array(epoch_loss_values))
 np.savetxt(os.path.join(working_dir, f'metric_values_{JOB_NAME}.txt'), np.array(metric_values))
-
+np.savetxt(os.path.join(working_dir, f'gibbs_trajectory_{JOB_NAME}.txt'), np.array(gibbs_values))
 ############################################################################
 
 print('script ran fully')

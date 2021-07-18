@@ -73,9 +73,9 @@ print('stylized model on four modalities. excluding one institution\n')
 #################################################################
 # SCRIPT PARAMETERS 
 
-MASK_RADIUS = 25
+MASK_RADIUS = 45
 
-print(f'''Using parameters MASK_RADIUS = {MASK_RADIUS} \n\n''')
+print(f'''Using parameters MASK_RADIUS = {MASK_RADIUS}  \n\n''')
 
 
 JOB_NAME = f"gibbs{MASK_RADIUS}_model_sourceDist_4mods_WT"
@@ -191,7 +191,6 @@ val_loader = DataLoader(val_ds, batch_size=2, shuffle=False, num_workers=4)
 
 print('Data loaders created.\n')
 ############################################################################
-
 ############################################################################
 
 # Create model, loss, optimizer
