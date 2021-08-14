@@ -1,4 +1,5 @@
 from monai.transforms import Transform
+from monai.networks.nets import UNet
 
 import torch
 import torch.nn as nn
@@ -66,10 +67,12 @@ class GibbsNoiseLayer(nn.Module, Fourier):
         self.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
         
         if alpha is None:
-            self.alpha = nn.Parameter(torch.rand(1), requires_grad=True)
+           # self.alpha = nn.Parameter(torch.rand(1), requires_grad=True)
+           self.alpha = torch.rand(1, requires_grad=True, device=self.device)
         else:
             alpha = min(max(alpha,0.),1.)
-            self.alpha = nn.Parameter(torch.tensor(alpha), requires_grad=True)
+            #self.alpha = nn.Parameter(torch.tensor([alpha]), requires_grad=True)
+            self.alpha = torch.tensor([alpha], requires_grad=True, device = self.device)
 
     def forward(self, img: torch.Tensor) -> torch.Tensor:
         
@@ -109,3 +112,26 @@ class GibbsNoiseLayer(nn.Module, Fourier):
         k_masked = k * mask
         
         return k_masked
+    
+    
+class Gibbs_UNet(nn.Module):
+    """ResUnet with Gibbs layer"""
+
+    def __init__(self, alpha=None):
+        super().__init__()
+
+        self.gibbs = GibbsNoiseLayer(.5)
+
+        self.ResUnet = UNet(
+        dimensions=3,
+        in_channels=1,
+        out_channels=1,
+        channels=(16, 32, 64, 128, 256),
+        strides=(2, 2, 2, 2),
+        num_res_units=2,
+    )
+
+    def forward(self,img):
+        img = self.gibbs(img)
+        img = self.ResUnet(img)
+        return img

@@ -76,7 +76,7 @@ print('stylized network on four modalities. excluding one institution\n')
 
 
 # gibbs layer starting point
-alpha = 0.5
+alpha = 1.0 
 
 JOB_NAME = f"gibbs{alpha}_layer_model_sourceDist_4mods_WT"
 print(f"JOB_NAME = {JOB_NAME}\n")
@@ -246,7 +246,7 @@ for epoch in range(max_epochs):
     for batch_data in train_loader:
         #save gibbs trajectory
         gibbs_values.append(model.gibbs.alpha.detach().item())
-        
+        print(len(gibbs_values))
         step += 1
         inputs, labels = (
             batch_data["image"].to(device),

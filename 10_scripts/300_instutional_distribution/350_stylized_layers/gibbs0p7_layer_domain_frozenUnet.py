@@ -76,9 +76,9 @@ print('stylized network on four modalities. excluding one institution\n')
 
 
 # gibbs layer starting point
-alpha = 0.5
+alpha = 0.7
 
-JOB_NAME = f"gibbs{alpha}_layer_model_sourceDist_4mods_WT"
+JOB_NAME = f"gibbs{alpha}_layer_frozenUnet_model_sourceDist_4mods_WT"
 print(f"JOB_NAME = {JOB_NAME}\n")
 
 # create dir
@@ -215,11 +215,23 @@ device = torch.device("cuda:0")
 
 model = Gibbs_UNet(alpha).to(device)
 
+# load trained baseline ResUnet
+baseline_path = '/vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/10_training_results/imperial_project_data/baseline_model_sourceDist_4mods_WT/baseline_model_sourceDist_4mods_WT.pth'
+
+model.ResUnet.load_state_dict(torch.load(baseline_path))
+
 loss_function = DiceLoss(to_onehot_y=False, sigmoid=True, squared_pred=True)
 
 optimizer = torch.optim.Adam(
       model.parameters(), 1e-4, weight_decay=1e-5, amsgrad=True)
 
+
+###########################################################################
+
+# freeze Unet
+for param in model.ResUnet.parameters():
+    param.requires_grad = False
+    
 print('Model instatitated with number of parameters = ',
       sum([p.numel() for p in model.parameters() if p.requires_grad]))
 

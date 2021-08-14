@@ -76,7 +76,7 @@ print('stylized network on four modalities. excluding one institution\n')
 
 
 # gibbs layer starting point
-alpha = 0.5
+alpha = 0.7
 
 JOB_NAME = f"gibbs{alpha}_layer_model_sourceDist_4mods_WT"
 print(f"JOB_NAME = {JOB_NAME}\n")
@@ -218,7 +218,7 @@ model = Gibbs_UNet(alpha).to(device)
 loss_function = DiceLoss(to_onehot_y=False, sigmoid=True, squared_pred=True)
 
 optimizer = torch.optim.Adam(
-      model.parameters(), 1e-4, weight_decay=1e-5, amsgrad=True)
+      model.parameters(), 1e-3, weight_decay=1e-5, amsgrad=True)
 
 print('Model instatitated with number of parameters = ',
       sum([p.numel() for p in model.parameters() if p.requires_grad]))

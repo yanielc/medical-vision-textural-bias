@@ -76,9 +76,9 @@ print('stylized network on four modalities. excluding one institution\n')
 
 
 # gibbs layer starting point
-alpha = 0.5
+alpha = 0.7
 
-JOB_NAME = f"gibbs{alpha}_layer_model_sourceDist_4mods_WT"
+JOB_NAME = f"gibbs{alpha}_layer_frozenUnet_model_sourceDist_4mods_WT"
 print(f"JOB_NAME = {JOB_NAME}\n")
 
 # create dir
@@ -154,7 +154,7 @@ train_seq_t1gd, _ = partition_dataset(data_seqs_4mods["T1Gd"], [0.9, 0.1], shuff
 train_seq_t2, _ = partition_dataset(data_seqs_4mods["T2"], [0.9, 0.1], shuffle=True, seed=0)
 
 # create training datasets
-CACHE_NUM = 100
+CACHE_NUM = 4
 
 train_ds_flair = CacheDataset(train_seq_flair, train_transform, cache_num=CACHE_NUM)
 train_ds_t1 = CacheDataset(train_seq_t1, train_transform, cache_num=CACHE_NUM)
@@ -215,11 +215,23 @@ device = torch.device("cuda:0")
 
 model = Gibbs_UNet(alpha).to(device)
 
+# load trained baseline ResUnet
+baseline_path = '/vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/10_training_results/imperial_project_data/baseline_model_sourceDist_4mods_WT/baseline_model_sourceDist_4mods_WT.pth'
+
+# model.ResUnet.load_state_dict(torch.load(baseline_path))
+
 loss_function = DiceLoss(to_onehot_y=False, sigmoid=True, squared_pred=True)
 
 optimizer = torch.optim.Adam(
-      model.parameters(), 1e-4, weight_decay=1e-5, amsgrad=True)
+      model.parameters(), 1e-3, weight_decay=1e-5, amsgrad=True)
 
+
+###########################################################################
+
+# freeze Unet
+# for param in model.ResUnet.parameters():
+#     param.requires_grad = False
+    
 print('Model instatitated with number of parameters = ',
       sum([p.numel() for p in model.parameters() if p.requires_grad]))
 
@@ -227,7 +239,7 @@ print('Model instatitated with number of parameters = ',
 
 # Training loop
 
-max_epochs =  110
+max_epochs =  50
 val_interval = 2
 best_metric = -1
 best_metric_epoch = -1
@@ -257,6 +269,9 @@ for epoch in range(max_epochs):
         loss = loss_function(outputs, labels)
         loss.backward()
         optimizer.step()
+#         print('alpha.grad', model.gibbs.alpha.grad)
+#         print('alpha', model.gibbs.alpha)
+        print(list(model.parameters())[1].grad)
         epoch_loss += loss.item()
         # print(
         #     f"{step}/{len(train_ds) // train_loader.batch_size}"
@@ -294,11 +309,11 @@ for epoch in range(max_epochs):
             if metric > best_metric:
                 best_metric = metric
                 best_metric_epoch = epoch + 1
-                torch.save(
-                    model.state_dict(),
-                    os.path.join(working_dir, JOB_NAME + '.pth'),
-                )
-                print("saved new best metric model")
+#                 torch.save(
+#                     model.state_dict(),
+#                     os.path.join(working_dir, JOB_NAME + '.pth'),
+#                 )
+#                 print("saved new best metric model")
             print(
                 f"current epoch: {epoch + 1} current mean dice: {metric:.4f}"
                 f"\nbest mean dice: {best_metric:.4f}"
@@ -315,23 +330,23 @@ print(
 
 # Save learning curves
 
-print('Plotting learning curves')
+# print('Plotting learning curves')
 
-plt.figure("train", (12, 6))
-plt.subplot(1, 2, 1)
-plt.title("Epoch average Loss")
-x = [i + 1 for i in range(len(epoch_loss_values))]
-y = epoch_loss_values
-plt.xlabel("epoch")
-plt.plot(x, y, color="red")
-plt.subplot(1, 2, 2)
-plt.title("Val mean Dice")
-x = [val_interval * (i + 1) for i in range(len(metric_values))]
-y = metric_values
-plt.xlabel("epoch")
-plt.plot(x, y, color="green")
-plt.savefig(os.path.join(root_dir, f'trainLoss_and_meanValScore_{JOB_NAME}.png'))
-plt.show()
+# plt.figure("train", (12, 6))
+# plt.subplot(1, 2, 1)
+# plt.title("Epoch average Loss")
+# x = [i + 1 for i in range(len(epoch_loss_values))]
+# y = epoch_loss_values
+# plt.xlabel("epoch")
+# plt.plot(x, y, color="red")
+# plt.subplot(1, 2, 2)
+# plt.title("Val mean Dice")
+# x = [val_interval * (i + 1) for i in range(len(metric_values))]
+# y = metric_values
+# plt.xlabel("epoch")
+# plt.plot(x, y, color="green")
+# plt.savefig(os.path.join(root_dir, f'trainLoss_and_meanValScore_{JOB_NAME}.png'))
+# plt.show()
 
 
 

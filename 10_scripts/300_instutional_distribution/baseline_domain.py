@@ -152,20 +152,24 @@ train_seq_flair, val_seq_flair = partition_dataset(data_seqs_4mods["FLAIR"], [0.
 train_seq_t1, val_seq_t1 = partition_dataset(data_seqs_4mods["T1"], [0.9, 0.1], shuffle=True, seed=0)
 train_seq_t1gd, val_seq_t1gd = partition_dataset(data_seqs_4mods["T1Gd"], [0.9, 0.1], shuffle=True, seed=0)
 train_seq_t2, val_seq_t2 = partition_dataset(data_seqs_4mods["T2"], [0.9, 0.1], shuffle=True, seed=0)
-# create datasets
 
-train_ds_flair = CacheDataset(train_seq_flair, train_transform, cache_num=100)
-train_ds_t1 = CacheDataset(train_seq_t1, train_transform, cache_num=100)
-train_ds_t1gd = CacheDataset(train_seq_t1gd, train_transform, cache_num=100)
-train_ds_t2 = CacheDataset(train_seq_t2, train_transform, cache_num=100)
+# create datasets
+CACHE_NUM = 100
+
+train_ds_flair = CacheDataset(train_seq_flair, train_transform, cache_num=CACHE_NUM)
+train_ds_t1 = CacheDataset(train_seq_t1, train_transform, cache_num=CACHE_NUM)
+train_ds_t1gd = CacheDataset(train_seq_t1gd, train_transform, cache_num=CACHE_NUM)
+train_ds_t2 = CacheDataset(train_seq_t2, train_transform, cache_num=CACHE_NUM)
+
 
 val_ds_flair = CacheDataset(val_seq_flair, val_transform, cache_num=50)
 val_ds_t1 = CacheDataset(val_seq_t1, val_transform, cache_num=50)
 val_ds_t1gd = CacheDataset(val_seq_t1gd, val_transform, cache_num=50)
 val_ds_t2 = CacheDataset(val_seq_t2, val_transform, cache_num=50)
 
-val_ds = ConcatDataset([val_ds_flair, val_ds_t1, val_ds_t1gd, val_ds_t2])
+
 train_ds = ConcatDataset([train_ds_flair, train_ds_t1, train_ds_t1gd, train_ds_t2])
+val_ds = ConcatDataset([val_ds_flair, val_ds_t1, val_ds_t1gd, val_ds_t2])
 
 # dataloaders
 train_loader = DataLoader(train_ds, batch_size=2, shuffle=True, num_workers=4)

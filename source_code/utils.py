@@ -1,6 +1,7 @@
 import numpy as np
 
 import torch
+import torch.nn as nn
 from torch.fft import (fftn, fft2, 
                        fftshift, ifftshift, 
                        ifft2, ifftn)
@@ -43,6 +44,7 @@ root_dir = '/vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/'
 # Local imports
 
 from filters_and_operators import ConvertToMultiChannelBasedOnBratsClassesd
+from stylization_layers import GibbsNoiseLayer, Gibbs_UNet
 ############################################################
 
 # Display functions
@@ -254,7 +256,7 @@ class model_evaluation:
     '''
 
     def __init__(self, model_path:str=None, instance_name: str = None, 
-            in_channels: int = 4, out_channels: int = 3):
+            in_channels: int = 4, out_channels: int = 3, gibbs_unet=False):
 
         '''
         Args:
@@ -263,19 +265,28 @@ class model_evaluation:
             instance_name = label for the class instantation
 
         '''
+        self.gibbs_unet = gibbs_unet
         self.in_channels = in_channels
         self.out_channels = out_channels
 
         self.model_path = model_path
         if model_path:
-            self.load_UNet(model_path)
+            if gibbs_unet:
+                self.load_gibbs_unet()
+            else:
+                self.load_UNet()
         else:
             self.model = None
         self.instance_name = instance_name
         self.eval_dict = defaultdict(list)
+        
+    def load_gibbs_unet(self) -> None:
+        """Loads a Gibbs_UNet model"""
+        
+        self.model = Gibbs_UNet().to(device)
+        self.model.load_state_dict(torch.load(self.model_path))
 
-
-    def load_UNet(self, model_path:str) -> None:
+    def load_UNet(self) -> None:
 
         '''Function to load model.
         Args: model_path (string): name of saved model.pth
@@ -288,7 +299,7 @@ class model_evaluation:
                      channels=(16, 32, 64, 128, 256),
                      strides=(2, 2, 2, 2),
                      num_res_units=2,).to(device)
-        self.model.load_state_dict(torch.load(model_path))
+        self.model.load_state_dict(torch.load(self.model_path))
 
     def dataset_eval_single(self, test_loader:DataLoader):
         ''' To evaluate model on given data using Dice metric and a single label.
@@ -404,19 +415,26 @@ class model_evaluation:
             data_dict = dictionary of type {name:test_loader}. If this argument is
                         passed, the other arguments are ignored.
         '''
-
-        if self.out_channels > 1:
-            if data_dict == None:
-                self.eval_dict[name] = self.dataset_eval_multi(test_loader)
-            else:
-                for name in data_dict:
-                    self.eval_dict[name] = self.dataset_eval_multi(data_dict[name])
-        else:
+        if self.gibbs_unet:
             if data_dict == None:
                 self.eval_dict[name] = self.dataset_eval_single(test_loader)
             else:
                 for name in data_dict:
                     self.eval_dict[name] = self.dataset_eval_single(data_dict[name])
+        else:
+        # work with unets   
+            if self.out_channels > 1:
+                if data_dict == None:
+                    self.eval_dict[name] = self.dataset_eval_multi(test_loader)
+                else:
+                    for name in data_dict:
+                        self.eval_dict[name] = self.dataset_eval_multi(data_dict[name])
+            else:
+                if data_dict == None:
+                    self.eval_dict[name] = self.dataset_eval_single(test_loader)
+                else:
+                    for name in data_dict:
+                        self.eval_dict[name] = self.dataset_eval_single(data_dict[name])
 
     def save(self):
         '''save a the state the dictionary in a pickle'''
@@ -436,3 +454,14 @@ class model_evaluation:
             self.__dict__.update(pickle.load(f))
         if original_model_path:
             self.load_UNet(self.model_path)
+
+            
+########################
+
+def weights_init(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        nn.init.normal_(m.weight.data, 0.0, 0.02)
+    elif classname.find('BatchNorm') != -1:
+        nn.init.normal_(m.weight.data, 1.0, 0.02)
+        nn.init.constant_(m.bias.data, 0)

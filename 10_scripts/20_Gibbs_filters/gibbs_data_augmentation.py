@@ -6,20 +6,27 @@ rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)            #
 resource.setrlimit(resource.RLIMIT_NOFILE, (4096, rlimit[1]))  #
 ################################################################
 
+# log description blurb
+blurb = 'We use gibbs random transform as a means of data augmentation'
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n')
+print(blurb, '\n')
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n')
+
 import os
 import shutil
-import json
+import tempfile
 
 import matplotlib.pyplot as plt
 import numpy as np
+from monai.apps import DecathlonDataset
 from monai.config import print_config
-from monai.data import DataLoader, CacheDataset, partition_dataset
+from monai.data import DataLoader
 from monai.losses import DiceLoss
 from monai.metrics import DiceMetric
 from monai.networks.nets import UNet
 from monai.transforms import (
     Activations,
-    AddChanneld,
+    AsChannelFirstd,
     AsDiscrete,
     CenterSpatialCropd,
     Compose,
@@ -37,8 +44,7 @@ from monai.transforms import (
 from monai.utils import set_determinism
 
 import torch
-from torch.utils.data import ConcatDataset
-import torch.nn as nn
+from torch.utils.data import random_split
 
 
 import matplotlib.pyplot as plt
@@ -56,55 +62,67 @@ SOURCE_CODE_PATH = '/homes/yc7620/Documents/medical-vision-textural-bias/source_
 import sys
 sys.path.append(SOURCE_CODE_PATH)
 
-from filters_and_operators import WholeTumorTCGA 
-from utils import ReCompose
-from stylization_layers import GibbsNoiseLayer
+from filters_and_operators import RandGibbsNoised
+from utils import show_slice_and_fourier
+
+
 # set determinism for reproducibility
 set_determinism(seed=0)
 
 print_config()
 
-root_dir = '/vol/bitbucket/yc7620/90_data/53_TCGA_data/' 
+root_dir = '/vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/'
 print('root_dir', root_dir)
-#################################################################
-# blurb
-
-print('stylized network on four modalities. excluding one institution\n')
-
-#################################################################
-# SCRIPT PARAMETERS 
-
-
-# gibbs layer starting point
-alpha = 0.5
-
-JOB_NAME = f"gibbs{alpha}_layer_model_sourceDist_4mods_WT"
-print(f"JOB_NAME = {JOB_NAME}\n")
-
-# create dir
-
-working_dir = os.path.join(root_dir,JOB_NAME)
-try:
-    os.mkdir(working_dir)
-except:
-    print('creating version _2 of working dir') 
-    JOB_NAME = JOB_NAME + '_2'
-    working_dir = os.path.join(root_dir,JOB_NAME)
-    os.mkdir(working_dir)
 #############################################################################
 
+# Preprocessing transforms. Note we use the RandFourierDiskMaskd with r=55
 
-# Preprocessing transforms. Note we use wrapping artifacts. 
 
-train_transform = ReCompose(
+MASK_RADIUS = 55
+
+# Define a new transform to convert brain tumor labels.
+# Here we convert the multi-classes labels into multi-labels segmentation 
+# task in One-Hot format.
+
+class ConvertToMultiChannelBasedOnBratsClassesd(MapTransform):
+    """
+    Convert labels to multi channels based on brats classes:
+    label 1 is the peritumoral edema
+    label 2 is the GD-enhancing tumor
+    label 3 is the necrotic and non-enhancing tumor core
+    The possible classes are TC (Tumor core), WT (Whole tumor)
+    and ET (Enhancing tumor).
+
+    """
+
+    def __call__(self, data):
+        d = dict(data)
+        for key in self.keys:
+            result = []
+            # merge label 2 and label 3 to construct TC
+            result.append(np.logical_or(d[key] == 2, d[key] == 3))
+            # merge labels 1, 2 and 3 to construct WT
+            result.append(
+                np.logical_or(
+                    np.logical_or(d[key] == 2, d[key] == 3), d[key] == 1
+                )
+            )
+            # label 2 is ET
+            result.append(d[key] == 2)
+            d[key] = np.stack(result, axis=0).astype(np.float32)
+        return d
+
+
+train_transform = Compose(
     [
+        # load 4 Nifti images and stack them together
         LoadImaged(keys=["image", "label"]),
-        AddChanneld(keys="image"),
-        WholeTumorTCGA(keys="label"),
+        AsChannelFirstd(keys="image"),
+        ConvertToMultiChannelBasedOnBratsClassesd(keys="label"),
         Spacingd(
             keys=["image", "label"],
             pixdim=(1.5, 1.5, 2.0),
-            mode=("bilinear", "nearest")
+            mode=("bilinear", "nearest"),
         ),
         Orientationd(keys=["image", "label"], axcodes="RAS"),
         RandSpatialCropd(
@@ -112,17 +130,18 @@ train_transform = ReCompose(
         ),
         RandFlipd(keys=["image", "label"], prob=0.5, spatial_axis=0),
         NormalizeIntensityd(keys="image", nonzero=True, channel_wise=True),
-        RandScaleIntensityd("image", factors=0.1, prob=0.5),
-        RandShiftIntensityd("image", offsets=0.1, prob=0.5),
+        RandScaleIntensityd(keys="image", factors=0.1, prob=0.5),
+        RandShiftIntensityd(keys="image", offsets=0.1, prob=0.5),
         ToTensord(keys=["image", "label"]),
-    ]
+        RandGibbsNoised("image", 1.0)
+        ]
 )
 
-val_transform = ReCompose(
+val_transform = Compose(
     [
         LoadImaged(keys=["image", "label"]),
-        AddChanneld(keys="image"),
-        WholeTumorTCGA(keys="label"),
+        AsChannelFirstd(keys="image"),
+        ConvertToMultiChannelBasedOnBratsClassesd(keys="label"),
         Spacingd(
             keys=["image", "label"],
             pixdim=(1.5, 1.5, 2.0),
@@ -135,7 +154,6 @@ val_transform = ReCompose(
     ]
 )
 
-
 print('\n')
 print('training transforms: ', train_transform.transforms,'\n')
 print('validation transforms: ', val_transform.transforms, '\n')
@@ -143,45 +161,30 @@ print('validation transforms: ', val_transform.transforms, '\n')
 
 # Dataloading
 
-# training
-with open(os.path.join(root_dir, 'train_sequence_by_modality.json'), 'r') as f:
-    data_seqs_4mods = json.load(f)
 
-# split off training and validation     
-train_seq_flair, _ = partition_dataset(data_seqs_4mods["FLAIR"], [0.9, 0.1], shuffle=True, seed=0)
-train_seq_t1, _ = partition_dataset(data_seqs_4mods["T1"], [0.9, 0.1], shuffle=True, seed=0)
-train_seq_t1gd, _ = partition_dataset(data_seqs_4mods["T1Gd"], [0.9, 0.1], shuffle=True, seed=0)
-train_seq_t2, _ = partition_dataset(data_seqs_4mods["T2"], [0.9, 0.1], shuffle=True, seed=0)
+train_ds = DecathlonDataset(
+    root_dir=root_dir,
+    task="Task01_BrainTumour",
+    transform=train_transform,
+    section="training",
+    download=False,
+    num_workers=4,
+    cache_num=100
+)
 
-# create training datasets
-CACHE_NUM = 100
+val_ds = DecathlonDataset(
+    root_dir=root_dir,
+    task="Task01_BrainTumour",
+    transform=val_transform,
+    section="validation",
+    download=False,
+    num_workers=4,
+    cache_num=50
+)
 
-train_ds_flair = CacheDataset(train_seq_flair, train_transform, cache_num=CACHE_NUM)
-train_ds_t1 = CacheDataset(train_seq_t1, train_transform, cache_num=CACHE_NUM)
-train_ds_t1gd = CacheDataset(train_seq_t1gd, train_transform, cache_num=CACHE_NUM)
-train_ds_t2 = CacheDataset(train_seq_t2, train_transform, cache_num=CACHE_NUM)
+val_ds, test_ds = random_split(val_ds, [48, 48], torch.Generator().manual_seed(0))
 
-# combined dataset and dataloader
-train_ds = ConcatDataset([train_ds_flair, train_ds_t1, train_ds_t1gd, train_ds_t2])
 train_loader = DataLoader(train_ds, batch_size=2, shuffle=True, num_workers=4)
-
-# validation out of dist
-with open(os.path.join(root_dir, 'test_sequence_by_modality.json'), 'r') as f:
-    val_data_seqs_4mods = json.load(f)
-
-# validation modalities     
-val_seq_flair  = val_data_seqs_4mods["FLAIR"]
-val_seq_t1  = val_data_seqs_4mods["T1"]
-val_seq_t1gd = val_data_seqs_4mods["T1Gd"]
-val_seq_t2 = val_data_seqs_4mods["T2"]
-
-val_ds_flair = CacheDataset(val_seq_flair, val_transform, cache_num=50)
-val_ds_t1 = CacheDataset(val_seq_t1, val_transform, cache_num=50)
-val_ds_t1gd = CacheDataset(val_seq_t1gd, val_transform, cache_num=50)
-val_ds_t2 = CacheDataset(val_seq_t2, val_transform, cache_num=50)
-
-# combined dataset and dataloader
-val_ds = ConcatDataset([val_ds_flair, val_ds_t1, val_ds_t1gd, val_ds_t2])
 val_loader = DataLoader(val_ds, batch_size=2, shuffle=False, num_workers=4)
 
 print('Data loaders created.\n')
@@ -189,31 +192,16 @@ print('Data loaders created.\n')
 
 # Create model, loss, optimizer
 
-class Gibbs_UNet(nn.Module):
-    """ResUnet with Gibbs layer"""
-    
-    def __init__(self, alpha=None):
-        super().__init__()
-        
-        self.gibbs = GibbsNoiseLayer(alpha)
-        
-        self.ResUnet = UNet(
-        dimensions=3,
-        in_channels=1,
-        out_channels=1,
-        channels=(16, 32, 64, 128, 256),
-        strides=(2, 2, 2, 2),
-        num_res_units=2,
-    )
-        
-    def forward(self,img):
-        img = self.gibbs(img) 
-        img = self.ResUnet(img)
-        return img
-    
 device = torch.device("cuda:0")
 
-model = Gibbs_UNet(alpha).to(device)
+model = UNet(
+    dimensions=3,
+    in_channels=4,
+    out_channels=3,
+    channels=(16, 32, 64, 128, 256),
+    strides=(2, 2, 2, 2),
+    num_res_units=2,
+).to(device)
 
 loss_function = DiceLoss(to_onehot_y=False, sigmoid=True, squared_pred=True)
 
@@ -227,13 +215,16 @@ print('Model instatitated with number of parameters = ',
 
 # Training loop
 
-max_epochs =  110
+max_epochs = 180  # 180
 val_interval = 2
 best_metric = -1
 best_metric_epoch = -1
 epoch_loss_values = []
 metric_values = []
-gibbs_values = [] # store the Gibbs trajectory
+metric_values_tc = []
+metric_values_wt = []
+metric_values_et = []
+
 
 print('\n Training started... \n')
 
@@ -244,9 +235,6 @@ for epoch in range(max_epochs):
     epoch_loss = 0
     step = 0
     for batch_data in train_loader:
-        #save gibbs trajectory
-        gibbs_values.append(model.gibbs.alpha.detach().item())
-        
         step += 1
         inputs, labels = (
             batch_data["image"].to(device),
@@ -273,8 +261,10 @@ for epoch in range(max_epochs):
             post_trans = Compose(
                 [Activations(sigmoid=True), AsDiscrete(threshold_values=True)]
             )
-            metric_sum = 0.0
-            metric_count = 0
+            metric_sum = metric_sum_tc = metric_sum_wt = metric_sum_et = 0.0
+            metric_count = (
+                metric_count_tc
+            ) = metric_count_wt = metric_count_et = 0
             for val_data in val_loader:
                 val_inputs, val_labels = (
                     val_data["image"].to(device),
@@ -287,20 +277,47 @@ for epoch in range(max_epochs):
                 not_nans = not_nans.item()
                 metric_count += not_nans
                 metric_sum += value.item() * not_nans
+                # compute mean dice for TC
+                value_tc, not_nans = dice_metric(
+                    y_pred=val_outputs[:, 0:1], y=val_labels[:, 0:1]
+                )
+                not_nans = not_nans.item()
+                metric_count_tc += not_nans
+                metric_sum_tc += value_tc.item() * not_nans
+                # compute mean dice for WT
+                value_wt, not_nans = dice_metric(
+                    y_pred=val_outputs[:, 1:2], y=val_labels[:, 1:2]
+                )
+                not_nans = not_nans.item()
+                metric_count_wt += not_nans
+                metric_sum_wt += value_wt.item() * not_nans
+                # compute mean dice for ET
+                value_et, not_nans = dice_metric(
+                    y_pred=val_outputs[:, 2:3], y=val_labels[:, 2:3]
+                )
+                not_nans = not_nans.item()
+                metric_count_et += not_nans
+                metric_sum_et += value_et.item() * not_nans
 
             metric = metric_sum / metric_count
             metric_values.append(metric)
-
+            metric_tc = metric_sum_tc / metric_count_tc
+            metric_values_tc.append(metric_tc)
+            metric_wt = metric_sum_wt / metric_count_wt
+            metric_values_wt.append(metric_wt)
+            metric_et = metric_sum_et / metric_count_et
+            metric_values_et.append(metric_et)
             if metric > best_metric:
                 best_metric = metric
                 best_metric_epoch = epoch + 1
                 torch.save(
                     model.state_dict(),
-                    os.path.join(working_dir, JOB_NAME + '.pth'),
+                    os.path.join(root_dir, f"gibbs_data_augmentation_prob1p0.pth"),
                 )
                 print("saved new best metric model")
             print(
                 f"current epoch: {epoch + 1} current mean dice: {metric:.4f}"
+                f" tc: {metric_tc:.4f} wt: {metric_wt:.4f} et: {metric_et:.4f}"
                 f"\nbest mean dice: {best_metric:.4f}"
                 f" at epoch: {best_metric_epoch}"
             )
@@ -330,20 +347,27 @@ x = [val_interval * (i + 1) for i in range(len(metric_values))]
 y = metric_values
 plt.xlabel("epoch")
 plt.plot(x, y, color="green")
-plt.savefig(os.path.join(root_dir, f'trainLoss_and_meanValScore_{JOB_NAME}.png'))
+plt.savefig(root_dir + f'trainLoss_and_meanValScore_baseline.png')
 plt.show()
 
-
-
-###########################################################################
-
-# save training information
-
-print('Saving epoch_loss_values and metrics')
-
-np.savetxt(os.path.join(working_dir, f'epoch_loss_values_{JOB_NAME}.txt'), np.array(epoch_loss_values))
-np.savetxt(os.path.join(working_dir, f'metric_values_{JOB_NAME}.txt'), np.array(metric_values))
-np.savetxt(os.path.join(working_dir, f'gibbs_trajectory_{JOB_NAME}.txt'), np.array(gibbs_values))
-############################################################################
-
-print('script ran fully')
+plt.figure("train", (18, 6))
+plt.subplot(1, 3, 1)
+plt.title("Val mean Dice TC")
+x = [val_interval * (i + 1) for i in range(len(metric_values_tc))]
+y = metric_values_tc
+plt.xlabel("epoch")
+plt.plot(x, y, color="blue")
+plt.subplot(1, 3, 2)
+plt.title("Val mean Dice WT")
+x = [val_interval * (i + 1) for i in range(len(metric_values_wt))]
+y = metric_values_wt
+plt.xlabel("epoch")
+plt.plot(x, y, color="brown")
+plt.subplot(1, 3, 3)
+plt.title("Val mean Dice ET")
+x = [val_interval * (i + 1) for i in range(len(metric_values_et))]
+y = metric_values_et
+plt.xlabel("epoch")
+plt.plot(x, y, color="purple")
+plt.savefig(root_dir + f'meanValScore_per_label_baseline.png')
+plt.show()

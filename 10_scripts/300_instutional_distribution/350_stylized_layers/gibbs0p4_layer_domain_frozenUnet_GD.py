@@ -76,9 +76,9 @@ print('stylized network on four modalities. excluding one institution\n')
 
 
 # gibbs layer starting point
-alpha = 0.5
+alpha = 0.4
 
-JOB_NAME = f"gibbs{alpha}_layer_model_sourceDist_4mods_WT"
+JOB_NAME = f"gibbs{alpha}_layer_frozenUnet_GibbsGD_model_sourceDist_4mods_WT"
 print(f"JOB_NAME = {JOB_NAME}\n")
 
 # create dir
@@ -215,11 +215,23 @@ device = torch.device("cuda:0")
 
 model = Gibbs_UNet(alpha).to(device)
 
+# load trained baseline ResUnet
+baseline_path = '/vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/10_training_results/imperial_project_data/baseline_model_sourceDist_4mods_WT/baseline_model_sourceDist_4mods_WT.pth'
+
+model.ResUnet.load_state_dict(torch.load(baseline_path))
+
 loss_function = DiceLoss(to_onehot_y=False, sigmoid=True, squared_pred=True)
 
 optimizer = torch.optim.Adam(
       model.parameters(), 1e-4, weight_decay=1e-5, amsgrad=True)
 
+
+###########################################################################
+
+# freeze Unet
+for param in model.ResUnet.parameters():
+    param.requires_grad = False
+    
 print('Model instatitated with number of parameters = ',
       sum([p.numel() for p in model.parameters() if p.requires_grad]))
 
@@ -227,7 +239,7 @@ print('Model instatitated with number of parameters = ',
 
 # Training loop
 
-max_epochs =  110
+max_epochs =  50 #110
 val_interval = 2
 best_metric = -1
 best_metric_epoch = -1
@@ -237,11 +249,32 @@ gibbs_values = [] # store the Gibbs trajectory
 
 print('\n Training started... \n')
 
+@torch.no_grad()
+def Gibbs_GD(inputs, labels, model, h = 0.01, learning_rate = 0.02):
+    """Function to update Gibbs layer via finite different SG"""
+#     with torch.no_grad():
+    old_alpha = model.gibbs.alpha.clone()
+    # loss at alpha
+    outputs_0 = model(inputs)
+    loss_0 = loss_function(outputs_0, labels)
+    # loss at perturbed alpha
+    model.gibbs.alpha = old_alpha + h
+    outputs_h = model(inputs)
+    loss_h = loss_function(outputs_h, labels)
+    # approximate gradient
+    delta = (loss_h - loss_0) / h
+    # update alpha and model
+    model.gibbs.alpha = old_alpha - learning_rate * delta
+    
+    return loss_0.detach().item(), model.gibbs.alpha.item()
+    
+
 for epoch in range(max_epochs):
     print("-" * 10)
     print(f"epoch {epoch + 1}/{max_epochs}")
     model.train()
     epoch_loss = 0
+    gibbs_loss_epoch = 0
     step = 0
     for batch_data in train_loader:
         #save gibbs trajectory
@@ -252,20 +285,27 @@ for epoch in range(max_epochs):
             batch_data["image"].to(device),
             batch_data["label"].to(device),
         )
-        optimizer.zero_grad()
-        outputs = model(inputs)
-        loss = loss_function(outputs, labels)
-        loss.backward()
-        optimizer.step()
-        epoch_loss += loss.item()
-        # print(
-        #     f"{step}/{len(train_ds) // train_loader.batch_size}"
-        #     f", train_loss: {loss.item():.4f}"
-        #     )
-    epoch_loss /= step
-    epoch_loss_values.append(epoch_loss)
-    print(f"epoch {epoch + 1} average loss: {epoch_loss:.4f}")
+        # update the Unet
+#         optimizer.zero_grad()
+#         outputs = model(inputs)
+#         loss = loss_function(outputs, labels)
+#         loss.backward()
+#         optimizer.step()
+#         epoch_loss += loss.item()
+        
+        # update Gibbs
+        gibbs_loss, gibbs_alpha = Gibbs_GD(inputs, labels, model)
+        gibbs_values.append(gibbs_alpha)
+        gibbs_loss_epoch += gibbs_loss
+        
 
+    epoch_loss /= step
+    gibbs_loss_epoch /= step
+#     epoch_loss_values.append(epoch_loss)
+    epoch_loss_values.append(gibbs_loss_epoch) # TODO: use this line with frozen Unet only
+    print(f"epoch {epoch + 1} average loss: {epoch_loss:.4f}")
+    
+    # test on validation
     if (epoch + 1) % val_interval == 0:
         model.eval()
         with torch.no_grad():

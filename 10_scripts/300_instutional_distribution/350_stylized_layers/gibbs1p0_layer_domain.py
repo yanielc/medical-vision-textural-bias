@@ -76,7 +76,7 @@ print('stylized network on four modalities. excluding one institution\n')
 
 
 # gibbs layer starting point
-alpha = 0.5
+alpha = 1.0 
 
 JOB_NAME = f"gibbs{alpha}_layer_model_sourceDist_4mods_WT"
 print(f"JOB_NAME = {JOB_NAME}\n")

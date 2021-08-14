@@ -143,29 +143,31 @@ print('validation transforms: ', val_transform.transforms, '\n')
 
 # Dataloading
 
-# load data dictionaries
-
 # training
 with open(os.path.join(root_dir, 'train_sequence_by_modality.json'), 'r') as f:
     data_seqs_4mods = json.load(f)
-# validation out of dist
-with open(os.path.join(root_dir, 'test_sequence_by_modality.json'), 'r') as f:
-    val_data_seqs_4mods = json.load(f)
 
-
-# training modalities     
-train_seq_flair  = data_seqs_4mods["FLAIR"]
-train_seq_t1  = data_seqs_4mods["T1"]
-train_seq_t1gd = data_seqs_4mods["T1Gd"]
-train_seq_t2 = data_seqs_4mods["T2"]
+# split off training and validation     
+train_seq_flair, _ = partition_dataset(data_seqs_4mods["FLAIR"], [0.9, 0.1], shuffle=True, seed=0)
+train_seq_t1, _ = partition_dataset(data_seqs_4mods["T1"], [0.9, 0.1], shuffle=True, seed=0)
+train_seq_t1gd, _ = partition_dataset(data_seqs_4mods["T1Gd"], [0.9, 0.1], shuffle=True, seed=0)
+train_seq_t2, _ = partition_dataset(data_seqs_4mods["T2"], [0.9, 0.1], shuffle=True, seed=0)
 
 # create training datasets
-CACHE_NUM = 5
+CACHE_NUM = 100
 
 train_ds_flair = CacheDataset(train_seq_flair, train_transform, cache_num=CACHE_NUM)
 train_ds_t1 = CacheDataset(train_seq_t1, train_transform, cache_num=CACHE_NUM)
 train_ds_t1gd = CacheDataset(train_seq_t1gd, train_transform, cache_num=CACHE_NUM)
 train_ds_t2 = CacheDataset(train_seq_t2, train_transform, cache_num=CACHE_NUM)
+
+# combined dataset and dataloader
+train_ds = ConcatDataset([train_ds_flair, train_ds_t1, train_ds_t1gd, train_ds_t2])
+train_loader = DataLoader(train_ds, batch_size=2, shuffle=True, num_workers=4)
+
+# validation out of dist
+with open(os.path.join(root_dir, 'test_sequence_by_modality.json'), 'r') as f:
+    val_data_seqs_4mods = json.load(f)
 
 # validation modalities     
 val_seq_flair  = val_data_seqs_4mods["FLAIR"]
@@ -178,20 +180,14 @@ val_ds_t1 = CacheDataset(val_seq_t1, val_transform, cache_num=50)
 val_ds_t1gd = CacheDataset(val_seq_t1gd, val_transform, cache_num=50)
 val_ds_t2 = CacheDataset(val_seq_t2, val_transform, cache_num=50)
 
-train_ds = ConcatDataset([train_ds_flair, train_ds_t1, train_ds_t1gd, train_ds_t2])
+# combined dataset and dataloader
 val_ds = ConcatDataset([val_ds_flair, val_ds_t1, val_ds_t1gd, val_ds_t2])
-
-
-# dataloaders
-train_loader = DataLoader(train_ds, batch_size=2, shuffle=True, num_workers=4)
 val_loader = DataLoader(val_ds, batch_size=2, shuffle=False, num_workers=4)
 
 print('Data loaders created.\n')
 ############################################################################
 
 # Create model, loss, optimizer
-
-
 
 class Gibbs_UNet(nn.Module):
     """ResUnet with Gibbs layer"""
