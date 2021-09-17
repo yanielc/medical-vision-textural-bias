@@ -20,7 +20,7 @@ import os
 batch_size = 4
 
 # Number of training epochs
-num_epochs = 200  
+num_epochs = 400  
 
 # Learning rate for optimizers
 lr = 0.0001

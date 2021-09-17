@@ -1,3 +1,5 @@
+from filters_and_operators import RandKSpaceSpikeNoise
+
 from monai.transforms import Transform
 from monai.networks.nets import UNet
 
@@ -133,5 +135,40 @@ class Gibbs_UNet(nn.Module):
 
     def forward(self,img):
         img = self.gibbs(img)
+        img = self.ResUnet(img)
+        return img
+
+##########################################
+
+class spike_layer(nn.Module):
+
+    def __init__(self, intensity):
+        super().__init__()
+        self.intensity = torch.tensor(intensity)
+
+    def forward(self, x):
+        t = RandKSpaceSpikeNoise(prob=1., intensity_range=(self.intensity.item(), self.intensity.item()), channel_wise=False)
+        return t(x)
+
+    
+class Spikes_UNet(nn.Module):
+    """ResUnet with Gibbs layer"""
+    
+    def __init__(self, intensity=15):
+        super().__init__()
+        
+        self.spike = spike_layer(intensity)
+        
+        self.ResUnet = UNet(
+        dimensions=3,
+        in_channels=1,
+        out_channels=1,
+        channels=(16, 32, 64, 128, 256),
+        strides=(2, 2, 2, 2),
+        num_res_units=2,
+    )
+        
+    def forward(self,img):
+        img = self.spike(img) 
         img = self.ResUnet(img)
         return img

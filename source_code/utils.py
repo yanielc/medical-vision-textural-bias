@@ -44,7 +44,7 @@ root_dir = '/vol/bitbucket/yc7620/90_data/52_MONAI_DATA_DIRECTORY/'
 # Local imports
 
 from filters_and_operators import ConvertToMultiChannelBasedOnBratsClassesd
-from stylization_layers import GibbsNoiseLayer, Gibbs_UNet
+from stylization_layers import GibbsNoiseLayer, Gibbs_UNet, Spikes_UNet
 ############################################################
 
 # Display functions
@@ -256,7 +256,7 @@ class model_evaluation:
     '''
 
     def __init__(self, model_path:str=None, instance_name: str = None, 
-            in_channels: int = 4, out_channels: int = 3, gibbs_unet=False):
+            in_channels: int = 4, out_channels: int = 3, gibbs_unet=False, spikes_unet=False):
 
         '''
         Args:
@@ -266,6 +266,7 @@ class model_evaluation:
 
         '''
         self.gibbs_unet = gibbs_unet
+        self.spikes_unet = spikes_unet
         self.in_channels = in_channels
         self.out_channels = out_channels
 
@@ -273,6 +274,8 @@ class model_evaluation:
         if model_path:
             if gibbs_unet:
                 self.load_gibbs_unet()
+            elif spikes_unet:
+                self.load_spikes_unet()
             else:
                 self.load_UNet()
         else:
@@ -284,6 +287,12 @@ class model_evaluation:
         """Loads a Gibbs_UNet model"""
         
         self.model = Gibbs_UNet().to(device)
+        self.model.load_state_dict(torch.load(self.model_path))
+        
+    def load_spikes_unet(self) -> None:
+        """Loads a Spikes_UNet model"""
+        
+        self.model = Spikes_UNet().to(device)
         self.model.load_state_dict(torch.load(self.model_path))
 
     def load_UNet(self) -> None:
@@ -415,7 +424,7 @@ class model_evaluation:
             data_dict = dictionary of type {name:test_loader}. If this argument is
                         passed, the other arguments are ignored.
         '''
-        if self.gibbs_unet:
+        if self.gibbs_unet or self.spikes_unet:
             if data_dict == None:
                 self.eval_dict[name] = self.dataset_eval_single(test_loader)
             else:

@@ -59,8 +59,7 @@ print('root_dir', root_dir)
 #########################################
 class RandConcatd(MapTransform, Randomizable):
 
-    """Transform to extract three consecutive slices containing
-    a nontrivial segmentation. """
+    """Transform to concatenate one slice into two channels """
 
     def __init__(self, keys, seed: int = None, allow_missing_keys: bool = False):
 
